@@ -496,12 +496,12 @@ class SoundController
 
     playMusic(clip)
     {
-        if(this.music!==null && this.music !== clip ){
-            this.music.stop();
-        }
-        this.music = this.scene[clip];
-        if(!this._musicOn) return;
-        this.music.play({loop: true});
+//        if(this.music!==null && this.music !== clip ){
+//            this.music.stop();
+//        }
+//        this.music = this.scene[clip];
+//        if(!this._musicOn) return;
+//        this.music.play({loop: true});
     }
 
     stopMusic()

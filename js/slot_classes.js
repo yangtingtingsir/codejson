@@ -206,9 +206,9 @@ class SlotSymbol
         {
             if(this.anim == null)
             {
-                this.sprite.setVisible(false);
-                this.anim = this.scene.add.sprite(this.sprite.x, this.posY, this.sprite.name + 'Sheet').setOrigin(0.5).play({ key: this.sprite.name + 'anim'});  // , frameRate : this.frameRate
-                this.anim.depth = 10;
+                this.sprite.setVisible(true);
+                if(this.anim !== null){ this.anim.stop();  this.anim.destroy();}
+                this.anim = null;
             }
         }
 

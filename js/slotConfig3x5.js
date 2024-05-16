@@ -638,58 +638,15 @@ var slotConfig3x5 = {
         // menu button
         slotControls.menuButton = new SceneButton(scene, 'button_menu', 'button_menu_hover', false);   
         slotControls.buttons.push(slotControls.menuButton);
-        slotControls.menuButton.create(860, -400, 0.5, 0.5);
-        slotControls.menuButton.addClickEvent(()=>{ 
+        slotControls.menuButton.create(-830, -400, 0.5, 0.5);
+        slotControls.menuButton.addClickEvent(()=>{
             console.log('menu click');
-            slotControls.settingsButton.button.setVisible(!slotControls.settingsButton.button.visible);  
-            slotControls.rulesButton.button.setVisible(!slotControls.rulesButton.button.visible); 
-            slotControls.slotInfoButton.button.setVisible(!slotControls.slotInfoButton.button.visible); 
-            scene.soundController.playClip('button_click');}, this);
-        slotControls.menuButton.button.setVisible(true); 
+            var pu = scene.guiController.showPopUp(this.createInfoPUHandler);
+            scene.soundController.playClip('button_click');
+        }, this);
+        slotControls.menuButton.button.setVisible(true);
 
-        // settings button
-        slotControls.settingsButton = new SceneButton(scene, 'button_settings', 'button_settings_hover', false);   
-        slotControls.buttons.push(slotControls.settingsButton);
-        slotControls.settingsButton.create(860, -300, 0.5, 0.5);
-        slotControls.settingsButton.addClickEvent(()=>{ 
-            console.log('settings click');
-            var pu = scene.guiController.showPopUp(this.createSettingsPUHandler);
-            scene.soundController.playClip('button_click');}, this);
-        slotControls.settingsButton.button.setVisible(false);  
-
-        // sound button
-        //slotControls.soundButton = new SceneButton(scene, 'button_on', 'button_off', true);   
-        //slotControls.buttons.push(slotControls.soundButton);
-        //slotControls.soundButton.create(-860, -300, 0.5, 0.5);
-        //slotControls.soundButton.addClickEvent(()=>{scene.soundController.soundOn(!scene.soundController._soundOn);}, scene);
-        //slotControls.soundButton.button.setVisible(true); 
-
-        // lines loop button
-        // slotControls.slotLinesLoopButton = new SceneButton(scene, 'button_lines', 'button_lines_hover', false);   
-        // slotControls.buttons.push(slotControls.slotLinesLoopButton);
-        // slotControls.slotLinesLoopButton.create(-360, 225, 0.5, 0.5);
-        // slotControls.slotLinesLoopButton.addClickEvent(slotControls.linesLoop_Click, slotControls);
-
-       // rules button
-       slotControls.rulesButton = new SceneButton(scene, 'button_rules', 'button_rules_hover', false);   
-       slotControls.buttons.push(slotControls.rulesButton);
-       slotControls.rulesButton.create(860, -200, 0.5, 0.5);
-       slotControls.rulesButton.addClickEvent(()=>{
-           var pu = scene.guiController.showPopUp(this.createInfoPUHandler);
-           scene.soundController.playClip('button_click');
-       }, this);   
-       slotControls.rulesButton.button.setVisible(false); 
-
-       // info button
-       slotControls.slotInfoButton = new SceneButton(scene, 'button_info', 'button_info_hover', false);   
-       slotControls.buttons.push(slotControls.slotInfoButton);
-       slotControls.slotInfoButton.create(860, -100, 0.5, 0.5);
-       slotControls.slotInfoButton.addClickEvent(()=>{
-            console.log('info click');
-           var pu = scene.guiController.showPopUp(this.createAboutPUHandler);
-           scene.soundController.playClip('button_click');
-       }, this);   
-       slotControls.slotInfoButton.button.setVisible(false); 
+   
 
 
         // adding the text fields
@@ -983,27 +940,27 @@ var slotConfig3x5 = {
         if(!popup.scene.soundController._musicOn) popup['musicButton'].setPressed();
 
         // privacy ant terms buttons
-        popup.addButton('privacyButton','extralong_button', 'extralong_button_hover', false, 0, 82 + yOffset);
+//        popup.addButton('privacyButton','extralong_button', 'extralong_button_hover', false, 0, 82 + yOffset);
         popup.addButton('exitButton','exit_button', 'exit_button_hover', false, 255, -247  + yOffset);
-        popup.addButton('termsButton','extralong_button', 'extralong_button_hover', false, 0, 192 + yOffset);
+//        popup.addButton('termsButton','extralong_button', 'extralong_button_hover', false, 0, 192 + yOffset);
 
-        popup['privacyButton'].clickEvent.add(()=>{popup.scene.soundController.playClip('button_click', false);}, popup);
-        popup['privacyButton'].clickEvent.add(()=>{window.open("http://www.mkeystudio.com"); }, popup);
+//        popup['privacyButton'].clickEvent.add(()=>{popup.scene.soundController.playClip('button_click', false);}, popup);
+//        popup['privacyButton'].clickEvent.add(()=>{window.open("http://www.mkeystudio.com"); }, popup);
         
-        popup['termsButton'].clickEvent.add(()=>{popup.scene.soundController.playClip('button_click', false);}, popup);
-        popup['termsButton'].clickEvent.add(()=>{window.open("http://www.mkeystudio.com"); }, popup);
+//        popup['termsButton'].clickEvent.add(()=>{popup.scene.soundController.playClip('button_click', false);}, popup);
+//        popup['termsButton'].clickEvent.add(()=>{window.open("http://www.mkeystudio.com"); }, popup);
 
         popup['exitButton'].clickEvent.add(()=>{popup.scene.soundController.playClip('button_click', false);}, popup);
         popup['exitButton'].clickEvent.add(()=>{popup.scene.guiController.closePopUp(popup);});
 
         // privacy ant terms buttons text
-        popup.privacyText = popup.scene.add.bitmapText(0, 72 + yOffset, 'gameFont_1', 'PRIVACY POLICY', 43, 1).setOrigin(0.5);
-        popup.privacyText.tint = 0xFFFFFF;
-        popup.add(popup.privacyText);
-
-        popup.termsText = popup.scene.add.bitmapText(0, 182 + yOffset, 'gameFont_1', 'TERMS OF USE', 43, 1).setOrigin(0.5);
-        popup.privacyText.tint = 0xFFFFFF;
-        popup.add(popup.termsText);
+//        popup.privacyText = popup.scene.add.bitmapText(0, 72 + yOffset, 'gameFont_1', 'PRIVACY POLICY', 43, 1).setOrigin(0.5);
+//        popup.privacyText.tint = 0xFFFFFF;
+//        popup.add(popup.privacyText);
+//
+//        popup.termsText = popup.scene.add.bitmapText(0, 182 + yOffset, 'gameFont_1', 'TERMS OF USE', 43, 1).setOrigin(0.5);
+//        popup.privacyText.tint = 0xFFFFFF;
+//        popup.add(popup.termsText);
     },
 
     createFreeGamesPUHandler(popup)

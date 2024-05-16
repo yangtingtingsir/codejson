@@ -96,13 +96,13 @@ class SlotGame extends Phaser.Scene{
         });
 
         // 2) loading sounds
-        this.load.audio('box_click_clip', ['audio/box_click.ogg', 'audio/box_click.mp3' ]);  // this.load.audio('wheel_spin_clip', 'audio/spin_sound.mp3'); this.load.audio('coins_clip', 'audio/win_coins.wav');
-        this.load.audio('wincoins_clip', ['audio/mixkit_win.wav']); // this.load.audio('win_clip', ['audio/win_sound.ogg','audio/win_sound.mp3']);
-        this.load.audio('button_click', ['audio/button.wav']); 
-        this.load.audio('spin_clip', ['audio/spin_sound.wav']); 
-        this.load.audio('win_clip', ['audio/win_coins.wav']);
-        this.load.audio('lose_clip', ['audio/lose.wav']);
-        this.load.audio('background_clip', ['audio/background.wav']);
+//        this.load.audio('box_click_clip', ['audio/box_click.ogg', 'audio/box_click.mp3' ]);  // this.load.audio('wheel_spin_clip', 'audio/spin_sound.mp3'); this.load.audio('coins_clip', 'audio/win_coins.wav');
+//        this.load.audio('wincoins_clip', ['audio/mixkit_win.wav']); // this.load.audio('win_clip', ['audio/win_sound.ogg','audio/win_sound.mp3']);
+//        this.load.audio('button_click', ['audio/button.wav']); 
+//        this.load.audio('spin_clip', ['audio/spin_sound.wav']); 
+//        this.load.audio('win_clip', ['audio/win_coins.wav']);
+//        this.load.audio('lose_clip', ['audio/lose.wav']);
+//        this.load.audio('background_clip', ['audio/background.wav']);
 
         // 3) loading bitmap fonts
         slotConfig.fonts.forEach((f)=>{this.load.bitmapFont(f.fontName, f.filePNG, f.fileXML);});
@@ -156,14 +156,14 @@ class SlotGame extends Phaser.Scene{
         this.winController = new WinController(this, this.slotControls.linesController, slotConfig.useScatter, slotConfig.scatter, slotConfig.winShowTime);
    
         // 5) add sounds 
-        this.box_click_clip = this.sound.add('box_click_clip');
-        this.win_clip = this.sound.add('win_clip');
-        this.button_click = this.sound.add('button_click');
-        this.spin_clip = this.sound.add('spin_clip');
-        this.wincoins_clip = this.sound.add('wincoins_clip');
-        this.lose_clip = this.sound.add('lose_clip');
-        this.background_clip = this.sound.add('background_clip');
- 
+//        this.box_click_clip = this.sound.add('box_click_clip');
+//        this.win_clip = this.sound.add('win_clip');
+//        this.button_click = this.sound.add('button_click');
+//        this.spin_clip = this.sound.add('spin_clip');
+//        this.wincoins_clip = this.sound.add('wincoins_clip');
+//        this.lose_clip = this.sound.add('lose_clip');
+//        this.background_clip = this.sound.add('background_clip');
+// 
         // 6) controls
         slotConfig.createControls(this, this.slotControls);
         this.slotControls.init(slotConfig.selectedLines, true);
