@@ -1,64 +1,132 @@
-// 3x5 243 lines
+// 3x5 20 lines - respins feature
+
+/*
+                ----- Scatter Symbol -----
+
+ The first 4 Scatter symbols that land on the reels award 1 Respin each.
+ Only 1 Scatter symbol can land on each reel.
+ When a Scatter symbol lands on a reeel and all wins are counted, it changed to a Wild symbol and awards a Respin with further 
+ Wilds possible on that reel (the reel is marked with a badge to indicate it contains Wilds)
+ Landing a 5th Scatter symbol in a single spin or Respin round awards 10 Free Spins.
+ Any Respins which were not used before triggering Free Spins are converted to additional Free Spins
+ Landing 1 Scatter symbol on each reel awards 10 Free Spins.
+*/
+var  slotControlsTmp = null;
 var slotConfig3x5 = {
-    slotTextColor : 0xFFEA31,   // text color
+    slotTextColor : 0x4f312d,       // text color
 
-    symbolSizeY: 220,
-    spinTime: 2000,             // time, milliseconds
-    winShowTime: 3000,          // time, milliseconds
-    winMessageTime: 2000,       // win message show time
+    symbolSizeY: 215, 
+    spinTime: 2000,                 // time, milliseconds
+    winShowTime: 3000,              // time, milliseconds
+    showWinCoinsMessage : false,    // displaying a message with the amount of money won
+    winMessageTime: 2000,           // win message show time
+    minWin : 200,                      // to show big, mega, huge popup
+    useBigWinCongratulation : true,    // to show big, mega, huge popup
+    showWinFreeSpinsMessage : true,
+    showFreeGameMessage : false,
 
-    symbAnimFrameRate: 16,      // symbols animation frame rate
-    frameWidth : 260,           // frame width
-    frameHeight : 217,          // frame height
+    symbAnimFrameRate: 24,      // symbols animation frame rate
+    frameWidth : 215,           // frame width
+    frameHeight : 215,          // frame height
+
+    playSpinSound: false,
 
     lineColor : 0xFFEA31,       // line color
+    showWinLines : false,
 
     lineBetMaxValue: 20,        // slot line bet maxvalue
     useWild: true,              // use wild flag, wild can be substitute for any symbol to create winning combinations (exclude first reel)
     wild: 'Wild',               // wild symbol name
-    useScatter: true,           // use scatter flag
-    scatter: 'Scatter',         // scatter functionality is not implemented in the current version 
+    useScatter: false,          // use scatter flag - we will use the scatter icon to launch the re-spin mode
+    scatter: 'Scatter',         // scatter symbol name
     selectedLines: 'all',       //'all' / 'first' - selectad lines at start
 
     useWildInFirstPosition: false,              // substitute of the first symbol not allowed
     useLineBetMultiplier: true,                 // win multiplied by bet
     useLineBetFreeSpinMultiplier: false,        // free spins win multiplied by bet
-    defaultCoins: 100000,                       // default player credit
+    defaultCoins: 100000,                       // default player credit 100 000
 
     localOffsetX: 0,                            // x offset from center for all scene objects
-    localOffsetY: 0,                            // y offset from center for all scene objects
+    localOffsetY: 70,                           // y offset from center for all scene objects
 
+    maxHold: 2,                                 // the maximum number of slot reels that can be held - not used
+    
     fonts: [
+        /*
         {
-            fontName: 'gameFont',
-            filePNG: 'fonts/roboto_slab_b_32_0.png',
-            fileXML: 'fonts/roboto_slab_b_32.xml'
+            fontName: 'gameFont_0',
+            filePNG:  'fonts/*.png',
+            fileXML:  'fonts/*.xml'
         },
+        */
         {
             fontName: 'gameFont_1',
-            filePNG: 'fonts/roboto_slab_b_32_1.png',
-            fileXML: 'fonts/roboto_slab_b_32.xml'
+            filePNG:  'fonts/roboto_b54_1.png',
+            fileXML:  'fonts/roboto_b54_1.xml'
         },
         {
             fontName: 'gameFont_2',
-            filePNG: 'fonts/roboto_slab_m_24_1.png',
-            fileXML: 'fonts/roboto_slab_m_24.xml'
+            filePNG:  'fonts/roboto_m42_1.png',
+            fileXML:  'fonts/roboto_m42_1.xml'
         },
+        /*
+        {
+            fontName: 'gameFont_3',
+            filePNG:  'fonts/*.png',
+            fileXML:  'fonts/*.xml'
+        },
+        */
     ],
 
     sprites: [
+        // debug reference
+        {
+            fileName: 'debug.png',
+            name: 'debugreference'
+        },
+
         // common sprites 
         {
             fileName: 'SlotMachine_3x5.png',
             name: 'slot'
         },
         {
-            fileName: 'ReelMaskTop_3x5.png',
-            name: 'slotmasktop'
+            fileName: 'ReelHolderTop.png',
+            name: 'reelholdertop'
         },
         {
-            fileName: 'ReelMaskBottom_3x5.png',
-            name: 'slotmaskbottom'
+            fileName: 'ReelHolderBot.png',
+            name: 'reelholderbot'
+        },
+        {
+            fileName: 'ColumnLeft.png',
+            name: 'column_left'
+        },
+        {
+            fileName: 'ColumnRight.png',
+            name: 'column_right'
+        },
+        /*
+        {
+            fileName: 'LanternLeft.png',
+            name: 'lantern_left'
+        },
+        {
+            fileName: 'LanternRight.png',
+            name: 'lantern_right'
+        },
+        {
+            fileName: 'LampPostRight.png',
+            name: 'post_right'
+        },
+        {
+            fileName: 'LampPostLeft.png',
+            name: 'post_left'
+        },
+        */
+        {
+            fileName: null,
+            name: 'paneljackpot'
         },
         {
             fileName: null,
@@ -106,6 +174,10 @@ var slotConfig3x5 = {
         },
         {
             fileName: null,
+            name: 'panel_menu'
+        },
+        {
+            fileName: null,
             name: 'button_lines'
         },
         {
@@ -143,6 +215,18 @@ var slotConfig3x5 = {
         {
             fileName: null,
             name: 'line_button_hover'
+        },
+        {
+            fileName: null,
+            name: 'button_hold'
+        },
+        {
+            fileName: null,
+            name: 'button_hold_on'
+        },
+        {
+            fileName: 'Horseshoe.png',
+            name: 'horseshoe'
         },
         // common gui sprites 
         {
@@ -190,11 +274,15 @@ var slotConfig3x5 = {
             name: 'message_panel'
         },   
         {
+            fileName: 'gui/SmallMessagePanel.png',
+            name: 'small_message_panel'
+        }, 
+        {
             fileName: 'gui/AboutPanel.png',
             name: 'about_panel'
         }, 
         {
-            fileName: 'gui/AboutTitle.png',
+            fileName: null,
             name: 'about_title'
         }, 
         {
@@ -202,8 +290,60 @@ var slotConfig3x5 = {
             name: 'settings_panel'
         }, 
         {
-            fileName: 'gui/SettingsTitle.png',
+            fileName: 'gui/FreeSpinPanel.png',
+            name: 'freespin_panel'
+        }, 
+        {
+            fileName: null,
+            name: 'freespin_title'
+        },
+        {
+            fileName: 'gui/BigWinPanel.png',
+            name: 'bigwin_panel'
+        }, 
+        {
+            fileName: null,
+            name: 'bigwin_title'
+        }, 
+        {
+            fileName: 'gui/HugeWinPanel.png',
+            name: 'hugewin_panel'
+        }, 
+        {
+            fileName: null,
+            name: 'hugewin_title'
+        },
+        {
+            fileName: 'gui/MegaWinPanel.png',
+            name: 'megawin_panel'
+        }, 
+        {
+            fileName: null,
+            name: 'megawin_title'
+        },
+        {
+            fileName: null,
             name: 'settings_title'
+        },
+        {
+            fileName: 'gui/PayLinesTable.png',
+            name: 'paylines_table'
+        },
+        {
+            fileName: null,
+            name: 'minor_title'
+        },
+        {
+            fileName: null,
+            name: 'major_title'
+        },
+        {
+            fileName: null,
+            name: 'rules_title'
+        },
+        {
+            fileName: null,
+            name: 'special_title'
         },
         {
             fileName: 'gui/Logo.png',
@@ -218,11 +358,11 @@ var slotConfig3x5 = {
             name: 'exit_button_hover'
         },   
         {
-            fileName: 'gui/MiddleButton.png', 
+            fileName: null, 
             name: 'middle_button'
         }, 
         {
-            fileName: 'gui/MiddleButtonHover.png', 
+            fileName: null, 
             name: 'middle_button_hover'
         },   
         {
@@ -242,9 +382,25 @@ var slotConfig3x5 = {
             name: 'extralong_button_hover'
         },
         {
+            fileName: 'gui/SmallButton.png', 
+            name: 'small_button'
+        }, 
+        {
+            fileName: 'gui/SmallButtonHover.png', 
+            name: 'small_button_hover'
+        }, 
+        {
             fileName: 'gui/InfoPanel.png', 
             name: 'info_panel'
         },   
+        {
+            fileName: 'gui/JackpotWinPanel.png', 
+            name: 'jackpotwin_panel'
+        },   
+        {
+            fileName: null, 
+            name: 'jackpotwin_title'
+        }, 
         {
             fileName: 'gui/popUpBkg.png', 
             name: 'pu_background'
@@ -264,19 +420,23 @@ var slotConfig3x5 = {
         {
             fileName: 'gui/PrevButton.png', 
             name: 'prev_button'
-        },    
+        },        
         {
-            fileName: null, 
-            name: 'minor_title'
-        },   
-        {
-            fileName: null, 
-            name: 'major_title'
+            fileName: 'gui/SoundOn.png', 
+            name: 'soundon'
         },  
         {
-            fileName: null, 
-            name: 'special_title'
-        },    
+            fileName: 'gui/SoundOff.png', 
+            name: 'soundoff'
+        }, 
+        {
+            fileName: 'gui/MusicOn.png', 
+            name: 'musicon'
+        }, 
+        {
+            fileName: 'gui/MusicOff.png', 
+            name: 'musicoff'
+        },  
         {
             fileName: null, 
             name: 'symbol_plate'
@@ -298,66 +458,59 @@ var slotConfig3x5 = {
     symbols:
     [
         {
-            fileName: 'Gold.png',                   // filename or null
-            name: 'Gold',                           // sprite name
-            fileNameBlurred: 'GoldBlurred.png',     // blurry symbol file name, folder png/SymbolsBlurred
-            animation: 'GoldSheet.png',             // animation sheet file name, folder png/SymbolsSheet
-            useWildSubstitute: true                 // use wild substitute for the symbol
+            fileName: 'Flask.png',                      // filename or null
+            name: 'Flask',                              // sprite name
+            fileNameBlurred: 'FlaskBlurred.png',        // blurry symbol file name, folder png/SymbolsBlurred
+            animation: 'FlaskSheet.png',                // animation sheet file name, folder png/SymbolsSheet
+            useWildSubstitute: true                     // use wild substitute for the symbol
         },
         {
-            fileName: 'Lantern.png',           
-            name: 'Lantern',                   
-            fileNameBlurred: 'LanternBlurred.png', 
-            animation: 'LanternSheet.png',
+            fileName: 'Hat.png',           
+            name: 'Hat',                   
+            fileNameBlurred: 'HatBlurred.png', 
+            animation: 'HatSheet.png',
             useWildSubstitute: true
         },
         {
-            fileName: 'Minecart.png',           
-            name: 'Minecart',                   
-            fileNameBlurred: 'MinecartBlurred.png', 
-            animation: 'MinecartSheet.png',
+            fileName: 'Spades.png',          
+            name: 'Spades',                   
+            fileNameBlurred: 'SpadesBlurred.png', 
+            animation: 'SpadesSheet.png',
             useWildSubstitute: true
         },
         {
-            fileName: '10.png',          
-            name: '10',                   
-            fileNameBlurred: '10Blurred.png', 
-            animation: '10Sheet.png',
+            fileName: 'Bag.png',          
+            name: 'Bag',                   
+            fileNameBlurred: 'BagBlurred.png', 
+            animation: 'BagSheet.png',
             useWildSubstitute: true
         },
         {
-            fileName: 'A.png',          
-            name: 'A',                   
-            fileNameBlurred: 'ABlurred.png', 
-            animation: 'ASheet.png',
+            fileName: 'Gun.png',          
+            name: 'Gun',                   
+            fileNameBlurred: 'GunBlurred.png', 
+            animation: 'GunSheet.png',
             useWildSubstitute: true
         },
         {
-            fileName: 'Pickaxe.png',          
-            name: 'Pickaxe',                   
-            fileNameBlurred: 'PickaxeBlurred.png', 
-            animation: 'PickaxeSheet.png',
+            fileName: 'Crosses.png',          
+            name: 'Crosses',                   
+            fileNameBlurred: 'CrossesBlurred.png', 
+            animation: 'CrossesSheet.png',
             useWildSubstitute: true
         },
         {
-            fileName: 'J.png',          
-            name: 'J',                   
-            fileNameBlurred: 'JBlurred.png', 
-            animation: 'JSheet.png',
+            fileName: 'Hearts.png',          
+            name: 'Hearts',                   
+            fileNameBlurred: 'HeartsBlurred.png', 
+            animation: 'HeartsSheet.png',
             useWildSubstitute: true
         },
         {
-            fileName: 'K.png',          
-            name: 'K',                   
-            fileNameBlurred: 'KBlurred.png', 
-            animation: 'KSheet.png',
-            useWildSubstitute: true
-        },
-        {
-            fileName: 'Q.png',          
-            name: 'Q',                   
-            fileNameBlurred: 'QBlurred.png', 
-            animation: 'QSheet.png',
+            fileName: 'Diamonds.png',          
+            name: 'Diamonds',                   
+            fileNameBlurred: 'DiamondsBlurred.png', 
+            animation: 'DiamondsSheet.png',
             useWildSubstitute: true
         },
         {
@@ -373,187 +526,204 @@ var slotConfig3x5 = {
             fileNameBlurred: 'ScatterBlurred.png', 
             animation: 'ScatterSheet.png',
             useWildSubstitute: false
+        },
+        {
+            fileName: null,          
+            name: 'Jackpot',                   
+            fileNameBlurred: null, 
+            animation: null,
+            useWildSubstitute: false
         }
     ],
 
     reels:[
         {//0
-            symbolImages: ['Minecart', 'Pickaxe', 'J', 'Lantern', 'Q', 'Gold', '10', 'K', 'A', 'Gold'],                         // 10
-            offsetX: -520,
-            offsetY: -66,
+            symbolImages: ['Hat', 'Gun', 'Crosses', 'Hat', 'Diamonds', 'Flask', 'Bag', 'Hearts', 'Spades', 'Scatter', 'Flask'], 
+            offsetX: -430,
+            offsetY: -78,
             windowImage: 'reel',    // not used
             windowsCount: 3,    
             addSpinTime: 0, // additional spin time for reel milliseconds   
         },
         {//1
-            symbolImages: ['Lantern', 'Gold', 'Wild', 'Minecart','Q', 'Pickaxe', 'J', 'Wild', 'K','A', '10', 'Gold'],               // 12
-            offsetX: -260,
-            offsetY: -66,
+            symbolImages: ['Hat', 'Flask', 'Hat','Diamonds', 'Gun', 'Crosses', 'Flask', 'Hearts','Spades', 'Bag', 'Scatter', 'Flask', 'Gun', 'Bag', 'Flask'], 
+            offsetX: -215,
+            offsetY: -78,
             windowImage: 'reel',        // not used
             windowsCount: 3,    
-            addSpinTime: 100, // additional spin time for reel milliseconds   
+            addSpinTime: 500, // additional spin time for reel milliseconds   
         },
         { // 2
-            symbolImages: ['Lantern', 'Wild', 'K', 'Minecart', 'Q', 'Gold', 'Pickaxe', 'J', 'Wild', 'Scatter', 'A', 'Wild', '10'],   // 13
+            symbolImages: ['Hat', 'Hearts', 'Flask', 'Diamonds', 'Flask', 'Gun', 'Crosses','Scatter', 'Spades', 'Hat', 'Bag'],
             offsetX: 0,
-            offsetY: -66,
+            offsetY: -78,
             windowImage: 'reel',        // not used
             windowsCount: 3,
-            addSpinTime: 200, // additional spin time for reel milliseconds   
+            addSpinTime: 1000, // additional spin time for reel milliseconds   
         },
         { // 3
-            symbolImages: ['Minecart', 'Pickaxe', 'Wild', 'J', 'Q', 'Lantern', 'Wild', 'K', 'A', 'Wild', 'Scatter', 'Gold', 'Scatter', '10'],   // 14
-            offsetX: 260,
-            offsetY: -66,
+            symbolImages: ['Flask', 'Gun', 'Crosses', 'Diamonds', 'Hat', 'Flask', 'Hearts', 'Spades', 'Hat', 'Scatter', 'Flask','Bag'],
+            offsetX: 215,
+            offsetY: -78,
             windowImage: 'reel',        // not used
             windowsCount: 3,
-            addSpinTime: 300, // additional spin time for reel milliseconds     
+            addSpinTime: 1500, // additional spin time for reel milliseconds     
         },
         { // 4
-            symbolImages: ['Gold', 'Wild', 'Lantern', 'Minecart', 'Pickaxe', 'J', 'Wild', 'Q', 'A', 'Wild', 'Scatter', 'K', 'Scatter' , '10'],   // 14
-            offsetX: 520,
-            offsetY: -66,
+            symbolImages: ['Flask', 'Hat', 'Flask', 'Gun', 'Crosses', 'Flask', 'Diamonds', 'Spades', 'Scatter', 'Hearts', 'Bag'],
+            offsetX: 430,
+            offsetY: -78,
             windowImage: 'reel',        // not used
             windowsCount: 3,
-            addSpinTime: 400, // additional spin time for reel milliseconds     
+            addSpinTime: 2000, // additional spin time for reel milliseconds     
         }
     ],
 
-    // reels_simulate: [0, 0, -1, -1, -1], // -1 - avoid reel simulate
+     reels_simulate: [0, 0, -1, -1, -1],     // -1 - avoid reel simulate
+    // reels_simulate: [9, 10, -1, -1, -1],     // scatter win - get free spins
+   
+    lines: [                    // predefined  slot lines positions 0 - most bottom window on reels
+        [1, 1, 1, 1, 1],  // line 0 
+        [2, 2, 2, 2, 2],  // line 1 
+        [0, 0, 0, 0, 0],  // line 2
+        [2, 1, 0, 1, 2],  // line 3
+        [0, 1, 2, 1, 0],  // line 4
+        [1, 2, 1, 2, 1],  // line 5
+        [1, 0, 1, 0, 1],  // line 6
+        [2, 2, 1, 0, 0],  // line 7
+        [0, 0, 1, 2, 2],  // line 8
+        [1, 0, 1, 2, 1],  // line 9
+
+        [1, 2, 1, 0, 1],  // line 10
+        [1, 0, 0, 0, 1],  // line 11
+        [0, 1, 1, 1, 0],  // line 12
+        [2, 1, 2, 1, 2],  // line 13
+        [0, 1, 0, 1, 0],  // line 14
+        [1, 1, 2, 1, 1],  // line 15
+        [1, 1, 0, 1, 1],  // line 16
+        [2, 2, 0, 2, 2],  // line 17
+        [0, 0, 2, 0, 0],  // line 18
+        [2, 0, 0, 0, 2]   // line 19
+    ],
 
     payLines:[
         {
-            line: ['Gold', 'Gold', 'Gold', 'Gold', 'Gold'],
+            line: ['Flask', 'Flask', 'Flask', 'Flask', 'Flask'],
             pay: 3,
             freeSpins: 0
         },
         {
-            line: ['Gold', 'Gold', 'Gold', 'Gold', 'any'],
+            line: ['Flask', 'Flask', 'Flask', 'Flask', 'any'],
             pay: 2,
             freeSpins: 0
         },
         {
-            line: ['Gold', 'Gold', 'Gold', 'any', 'any'],
+            line: ['Flask', 'Flask', 'Flask', 'any', 'any'],
             pay: 1,
             freeSpins: 0
         },
         {
-            line: ['Lantern', 'Lantern', 'Lantern', 'Lantern', 'Lantern'],
+            line: ['Hat', 'Hat', 'Hat', 'Hat', 'Hat'],
             pay: 5,
             freeSpins: 0
         },
         {
-            line: ['Lantern', 'Lantern', 'Lantern', 'Lantern', 'any'],
+            line: ['Hat', 'Hat', 'Hat', 'Hat', 'any'],
             pay: 3,
             freeSpins: 0
         },
         {
-            line: ['Lantern', 'Lantern', 'Lantern', 'any', 'any'],
+            line: ['Hat', 'Hat', 'Hat', 'any', 'any'],
             pay: 1,
             freeSpins: 0
         },
         {
-            line: ['Minecart', 'Minecart', 'Minecart', 'Minecart', 'Minecart'],
-            pay: 6,
-            freeSpins: 0
-        },
-        {
-            line: ['Minecart', 'Minecart', 'Minecart', 'Minecart', 'any'],
-            pay: 3,
-            freeSpins: 0
-        },
-        {
-            line: ['Minecart', 'Minecart', 'Minecart', 'any', 'any'],
-            pay: 2,
-            freeSpins: 0
-        },
-        {
-            line: ['Pickaxe', 'Pickaxe', 'Pickaxe', 'Pickaxe', 'Pickaxe'],
+            line: ['Gun', 'Gun', 'Gun', 'Gun', 'Gun'],
             pay: 7,
             freeSpins: 0
         },
         {
-            line: ['Pickaxe', 'Pickaxe', 'Pickaxe', 'Pickaxe', 'any'],
+            line: ['Gun', 'Gun', 'Gun', 'Gun', 'any'],
             pay: 3,
             freeSpins: 0
         },
         {
-            line: ['Pickaxe', 'Pickaxe', 'Pickaxe', 'any', 'any'],
+            line: ['Gun', 'Gun', 'Gun', 'any', 'any'],
             pay: 2,
             freeSpins: 0
         },
         {
-            line: ['10', '10', '10', '10', '10'],
+            line: ['Bag', 'Bag', 'Bag', 'Bag', 'Bag'],
             pay: 8,
             freeSpins: 0
         },
         {
-            line: ['10', '10', '10', '10', 'any'],
+            line: ['Bag', 'Bag', 'Bag', 'Bag', 'any'],
             pay: 3,
             freeSpins: 0
         },
         {
-            line: ['10', '10', '10', 'any', 'any'],
+            line: ['Bag', 'Bag', 'Bag', 'any', 'any'],
             pay: 2,
             freeSpins: 0
         },
         {
-            line: ['J', 'J', 'J', 'J', 'J'],
+            line: ['Crosses', 'Crosses', 'Crosses', 'Crosses', 'Crosses'],
             pay: 17,
             freeSpins: 0
         },
         {
-            line: ['J', 'J', 'J', 'J', 'any'],
+            line: ['Crosses', 'Crosses', 'Crosses', 'Crosses', 'any'],
             pay: 13,
             freeSpins: 0
         },
         {
-            line: ['J', 'J', 'J', 'any', 'any'],
+            line: ['Crosses', 'Crosses', 'Crosses', 'any', 'any'],
             pay: 11,
             freeSpins: 0
         },
         {
-            line: ['Q', 'Q', 'Q', 'Q', 'Q'],
+            line: ['Diamonds', 'Diamonds', 'Diamonds', 'Diamonds', 'Diamonds'],
             pay: 19,
             freeSpins: 0
         },
         {
-            line: ['Q', 'Q', 'Q', 'Q', 'any'],
+            line: ['Diamonds', 'Diamonds', 'Diamonds', 'Diamonds', 'any'],
             pay: 13,
             freeSpins: 0
         },
         {
-            line: ['Q', 'Q', 'Q', 'any', 'any'],
+            line: ['Diamonds', 'Diamonds', 'Diamonds', 'any', 'any'],
             pay: 11,
             freeSpins: 0
         },
         {
-            line: ['K', 'K', 'K', 'K', 'K'],
+            line: ['Hearts', 'Hearts', 'Hearts', 'Hearts', 'Hearts'],
             pay: 20,
             freeSpins: 0
         },
         {
-            line: ['K', 'K', 'K', 'K', 'any'],
+            line: ['Hearts', 'Hearts', 'Hearts', 'Hearts', 'any'],
             pay: 14,
             freeSpins: 0
         },
         {
-            line: ['K', 'K', 'K', 'any', 'any'],
+            line: ['Hearts', 'Hearts', 'Hearts', 'any', 'any'],
             pay: 11,
             freeSpins: 0
         },
         {
-            line: ['A', 'A', 'A', 'A', 'A'],
+            line: ['Spades', 'Spades', 'Spades', 'Spades', 'Spades'],
             pay: 25,
             freeSpins: 0
         },
         {
-            line: ['A', 'A', 'A', 'A', 'any'],
+            line: ['Spades', 'Spades', 'Spades', 'Spades', 'any'],
             pay: 15,
             freeSpins: 0
         },
         {
-            line: ['A', 'A', 'A', 'any', 'any'],
+            line: ['Spades', 'Spades', 'Spades', 'any', 'any'],
             pay: 11,
             freeSpins: 0
         },
@@ -567,10 +737,23 @@ var slotConfig3x5 = {
         }
     ],
     
+    // jackpot settings - not used
+    jackpot:
+        {
+            symbolName: 'Jackpot',
+            symbolsCount: 6,
+            defaultAmount: 1000,        // coins amout at start
+            increaseValue: 1,           // jackpot increment after spin
+        },
+
     createSlotGraphic: function(scene){
         // scene.background =  scene.addSpriteLocPos('background', 0, 0); //?.setScale(1.5);
         // scene.background.depth = -5;
-
+/*
+        scene.debugreference =  scene.addSpriteLocPos('debugreference', 0, -67); //?.setScale(1.5);
+        scene.debugreference.depth = 2000;
+        scene.debugreference.setAlpha(0.0);
+*/
         // lamps
         /*
             scene.lampsArray = []; 
@@ -582,115 +765,266 @@ var slotConfig3x5 = {
             scene.leftLamp.on();
             scene.rightLamp.on();
         */
-       
-        // нужно добавить свои спрайты
-         scene.slot =  scene.addSpriteLocPos('slot', 0, -70); 
-         scene.slot.depth = -1;
-         scene.slot =  scene.addSpriteLocPos('slotmasktop', 0, -410); 
-         scene.slot =  scene.addSpriteLocPos('slotmaskbottom', 0, 260); 
+        //前面是横向 正数偏右 后面纵向 正数偏下
+        scene.slot =  scene.addSpriteLocPos('slot', 25, -145);
+        scene.slot.depth = -1;
 
-         scene.totalbetPanel = scene.addSpriteLocPos('panel_totalbet', -370, 225 + 220); 
-         scene.linesPanel = scene.addSpriteLocPos('panel_lines', -650, 225 + 220); 
-         scene.balancePanel = scene.addSpriteLocPos('panel_balance', 370, 225 + 220); 
-         scene.winPanel = scene.addSpriteLocPos('panel_win', 650, 225 + 220); 
+       // scene.leftpost =  scene.addSpriteLocPos('post_left', -680, 0).setOrigin(0.5, 0.05); 
+       // scene.rightpost =  scene.addSpriteLocPos('post_right', 780, -460).setOrigin(0.5, 0.05);   
+
+       // scene.lanternleft =  scene.addSpriteLocPos('lantern_left', -680, -483).setOrigin(0.5, 0.05); 
+       // scene.lanternright =  scene.addSpriteLocPos('lantern_right', 720, -463).setOrigin(0.5, 0.05);   
+
+        // scene.paneljackpot =  scene.addSpriteLocPos('paneljackpot', 0, -450);    
+        scene.reelholdertop =  scene.addSpriteLocPos('reelholdertop', 0, -503);  
+        scene.reelholderbot =  scene.addSpriteLocPos('reelholderbot', 3, 357);   
+        scene.columnLeft =  scene.addSpriteLocPos('column_left', -582, -40);
+        scene.columnRight =  scene.addSpriteLocPos('column_right', 610, -40);
+
+
     },
 
     createReels: function(scene) {
         var _reels = [];
         for(var ri = 0; ri < this.reels.length; ri++)
         {
-            _reels.push(new Reel(scene, this.reels[ri], ri, this.symbolSizeY, this.reels[ri].windowsCount, false, this.spinTime, this.symbAnimFrameRate));
+            _reels.push(new Reel(scene, this.reels[ri], ri, this.symbolSizeY, this.reels[ri].windowsCount, true, this.spinTime, this.symbAnimFrameRate));
         }
         return _reels;
     },
-
+   
     createControls: function(scene, slotControls) {
+        let depth = 11;
+        slotControlsTmp = slotControls;
+        // panels
+//        slotControls.linesPanel = scene.addSpriteLocPos('panel_lines', -548, 178 + 220); 
+//        slotControls.linesPanel.setDepth(depth); 
+        slotControls.totalbetPanel = scene.addSpriteLocPos('panel_totalbet', -255, 160 + 220);
+        slotControls.totalbetPanel.setDepth(depth);
+        slotControls.balancePanel = scene.addSpriteLocPos('panel_totalbet', 315, 160 + 220);
+        slotControls.balancePanel.setDepth(depth);
+        slotControls.winPanel = scene.addSpriteLocPos('panel_totalbet', 548, 160 + 220);
+        slotControls.winPanel.setDepth(depth);
+        // slotControls.menuPanel = scene.addSpriteLocPos('panel_menu', -730, -230); 
+        // slotControls.menuPanel.setDepth(depth); 
+        // slotControls.menuPanel.setVisible(false);
+
         // totalbet minus button
         slotControls.totalBetMinusButton = new SceneButton(scene, 'button_minus','button_minus_hover', false);   
         slotControls.buttons.push(slotControls.totalBetMinusButton);
-        slotControls.totalBetMinusButton.create(-370-95, 215 + 220, 0.5, 0.5);
+        slotControls.totalBetMinusButton.create(-315 - 40, 160 + 220, 0.5, 0.5);
         slotControls.totalBetMinusButton.addClickEvent(slotControls.lineBetMinus_Click, slotControls);
-
+        slotControls.totalBetMinusButton.setDepth(depth); 
+ 
         // totalbet plus button
         slotControls.totalBetPlusButton = new SceneButton(scene, 'button_plus','button_plus_hover', false);   
         slotControls.buttons.push(slotControls.totalBetPlusButton);
-        slotControls.totalBetPlusButton.create(-370 + 95, 215 + 220, 0.5, 0.5);
+        slotControls.totalBetPlusButton.create(-315 + 160, 160 + 220, 0.5, 0.5);
         slotControls.totalBetPlusButton.addClickEvent(slotControls.lineBetPlus_Click, slotControls);
+        slotControls.totalBetPlusButton.setDepth(depth);        
 
         // maxbet button
         slotControls.slotMaxBetButton = new SceneButton(scene, 'button_maxbet', 'button_maxbet_hover', false);   
         slotControls.buttons.push(slotControls.slotMaxBetButton);
-        slotControls.slotMaxBetButton.create(-100, 245 + 200, 0.5, 0.5);
-        slotControls.slotMaxBetButton.addClickEvent(slotControls.maxBet_Click, slotControls);     
-         
+        slotControls.slotMaxBetButton.create(-548, 160 + 220, 0.5, 0.5);
+        slotControls.slotMaxBetButton.addClickEvent(slotControls.maxBet_Click, slotControls);
+        slotControls.slotMaxBetButton.setDepth(depth);
+               
         // autoSpin button
-        slotControls.slotAutoSpinButton = new SceneButton(scene, 'button_autospin', 'button_autospin_hover', false); 
+        slotControls.slotAutoSpinButton = new SceneButton(scene, 'button_autospin', 'button_autospin_hover', true); 
         slotControls.buttons.push(slotControls.slotAutoSpinButton);
-        slotControls.slotAutoSpinButton.create(100, 245 + 200, 0.5, 0.5);
-        slotControls.slotAutoSpinButton.button.setVisible(true);   
+        slotControls.slotAutoSpinButton.create(110, 160 + 220, 0.5, 0.5);
+        slotControls.slotAutoSpinButton.button.setVisible(true);
+        slotControls.changeAutoSpinModeEvent.add((autoSpin)=>
+        {
+            if (!autoSpin)
+            {
+                slotControls.slotAutoSpinButton.release();
+            }
+        }, this);
+        slotControls.slotAutoSpinButton.setDepth(depth); 
 
         // spin button
         slotControls.slotSpinButton = new SpinButton(scene, 'button_spin', 'button_spin_hover', false);   
         slotControls.buttons.push(slotControls.slotSpinButton);
-        slotControls.slotSpinButton.create(0, 225 + 200, 0.5, 0.5);    
+        slotControls.slotSpinButton.create(0, 173 + 200, 0.5, 0.5);    
         slotControls.slotSpinButton.clickEvent.add(scene.handleAnimation, scene);  
+        slotControls.slotSpinButton.setDepth(depth); 
 
         // menu button
-        slotControls.menuButton = new SceneButton(scene, 'button_menu', 'button_menu_hover', false);   
+        slotControls.menuButton = new SceneButton(scene, 'button_menu', 'button_menu_hover', true);   
         slotControls.buttons.push(slotControls.menuButton);
-        slotControls.menuButton.create(-830, -400, 0.5, 0.5);
+        slotControls.menuButton.create(750, 380, 0.5, 0.5);
         slotControls.menuButton.addClickEvent(()=>{
             console.log('menu click');
-            var pu = scene.guiController.showPopUp(this.createInfoPUHandler);
-            scene.soundController.playClip('button_click');
-        }, this);
-        slotControls.menuButton.button.setVisible(true);
+            slotControls.settingsButton.button.setVisible(!slotControls.settingsButton.button.visible);  
+            slotControls.rulesButton.button.setVisible(!slotControls.rulesButton.button.visible); 
+            //slotControls.slotInfoButton.button.setVisible(!slotControls.slotInfoButton.button.visible);
+            // slotControls.menuPanel.setVisible(!slotControls.menuPanel.visible);
+            scene.soundController.playClip('button_click');}, this);
+        slotControls.menuButton.button.setVisible(true); 
+        slotControls.menuButton.setDepth(depth); 
+        slotControls.creditSumText = scene.add.bitmapText(scene.centerX + 315, scene.centerY + 160 + 220, 'gameFont_1', '' + scene.slotPlayer.coins, 42, 1).setOrigin(0.5);
+        slotControls.creditSumText.depth = depth;
 
-   
+        // settings button
+        slotControls.settingsButton = new SceneButton(scene, 'button_settings', 'button_settings_hover', false);   
+        slotControls.buttons.push(slotControls.settingsButton);
+        slotControls.settingsButton.create(750, 280, 0.5, 0.5);
+        slotControls.settingsButton.addClickEvent(()=>{
+            console.log('settings click');
+            var pu = scene.guiController.showPopUp(this.createSettingsPUHandler);
+            scene.soundController.playClip('button_click');}, this);
+        slotControls.settingsButton.button.setVisible(false);  
+        slotControls.settingsButton.setDepth(depth); 
 
+        // sound button
+        //slotControls.soundButton = new SceneButton(scene, 'button_on', 'button_off', true);   
+        //slotControls.buttons.push(slotControls.soundButton);
+        //slotControls.soundButton.create(-860, -300, 0.5, 0.5);
+        //slotControls.soundButton.addClickEvent(()=>{scene.soundController.soundOn(!scene.soundController._soundOn);}, scene);
+        //slotControls.soundButton.button.setVisible(true); 
+
+        // lines loop button - not used
+        // slotControls.slotLinesLoopButton = new SceneButton(scene, 'button_lines', 'button_lines_hover', false);   
+        // slotControls.buttons.push(slotControls.slotLinesLoopButton);
+        // slotControls.slotLinesLoopButton.create(-700, 212 + 220, 0.5, 0.5);
+        // slotControls.slotLinesLoopButton.addClickEvent(slotControls.linesLoop_Click, slotControls);
+
+        // lines minus button - not used
+        // slotControls.linesMinusButton = new SceneButton(scene, 'button_minus','button_minus_hover', false);   
+        // slotControls.buttons.push(slotControls.linesMinusButton);
+        // slotControls.linesMinusButton.create(-610-68, 212 + 220, 0.5, 0.5);
+        // slotControls.linesMinusButton.addClickEvent(slotControls.linesMinus_Click, slotControls);
+        // slotControls.linesMinusButton.setDepth(depth); 
+         
+        // lines plus button - not used
+        // slotControls.linesPlusButton = new SceneButton(scene, 'button_plus','button_plus_hover', false);   
+        // slotControls.buttons.push(slotControls.linesPlusButton);
+        // slotControls.linesPlusButton.create(-610 + 68, 212 + 220, 0.5, 0.5);
+        // slotControls.linesPlusButton.addClickEvent(slotControls.linesPlus_Click, slotControls);
+        // slotControls.linesPlusButton.setDepth(depth); 
+
+       // rules button
+       slotControls.rulesButton = new SceneButton(scene, 'button_rules', 'button_rules_hover', false);   
+       slotControls.buttons.push(slotControls.rulesButton);
+       slotControls.rulesButton.create(750, 180, 0.5, 0.5);
+       slotControls.rulesButton.addClickEvent(()=>{
+           var pu = scene.guiController.showPopUp(this.createInfoPUHandler);
+           scene.soundController.playClip('button_click');
+       }, this);   
+       slotControls.rulesButton.button.setVisible(false); 
+       slotControls.rulesButton.setDepth(depth); 
+
+       // info button
+       slotControls.slotInfoButton = new SceneButton(scene, 'button_info', 'button_info_hover', false);   
+       slotControls.buttons.push(slotControls.slotInfoButton);
+       slotControls.slotInfoButton.create(-770, -45, 0.5, 0.5);
+       slotControls.slotInfoButton.addClickEvent(()=>{
+            console.log('info click');
+           var pu = scene.guiController.showPopUp(this.createAboutPUHandler);
+           scene.soundController.playClip('button_click');
+       }, this);   
+       slotControls.slotInfoButton.button.setVisible(false); 
+       slotControls.slotInfoButton.setDepth(depth); 
+
+       // hold buttons - not used
+        slotControls.holdButtons = [];
+        for(var ri = 0; ri < this.reels.length; ri++)
+        {
+            var butt = 'holdButton' + ri;
+            slotControls[butt] = new SceneButton(scene, 'button_hold', 'button_hold_on', true);   
+            slotControls.buttons.push(slotControls[butt]);
+            slotControls.holdButtons.push(slotControls[butt]);
+            slotControls[butt].create(-492 + ri*246, -565, 0.5, 0.5);
+            slotControls[butt].setDepth(depth); 
+            slotControls[butt].button.setVisible(false);   // disable hold button
+            slotControls[butt].reelNumber = ri;
+        }
+
+        // respins
+        slotControls.respinMarkers = [];
+        for(var ri = 0; ri < this.reels.length; ri++)
+        {
+            var respin = 'respin_' + ri;
+            slotControls[respin] = scene.addSpriteLocPos('horseshoe', -429 + ri * 215, -472); 
+            slotControls.respinMarkers.push(slotControls[respin]);
+            slotControls[respin].setDepth(depth); 
+            slotControls[respin].setVisible(true); 
+            slotControls[respin].reelNumber = ri;
+        }
 
         // adding the text fields
-        slotControls.linesText = scene.add.bitmapText(scene.centerX - 650, scene.centerY + 165 + 220, 'gameFont_2', 'LINES', 30, 1).setOrigin(0.5);
-        slotControls.linesCountText = scene.add.bitmapText(scene.centerX - 652, scene.centerY + 215 + 220, 'gameFont_1', slotControls.selectedLinesCount, 43, 1).setOrigin(0.5);
-        // todel slotControls.slotLinesLoopButton.pointerDownEvent.add(()=>{slotControls.linesCountText.setPosition(slotControls.linesCountText.x, scene.centerY + 212);});
-        // todel slotControls.slotLinesLoopButton.pointerUpEvent.add(()=>{slotControls.linesCountText.setPosition(slotControls.linesCountText.x, scene.centerY + 200);});
- 
-        slotControls.lineBetAmountText = scene.add.bitmapText(scene.centerX - 420, scene.centerY + 215 + 220, 'gameFont_1', slotControls.lineBet, 43, 1).setOrigin(0.5);
+//        slotControls.linesText = scene.add.bitmapText(scene.centerX - 548, scene.centerY + 120 + 220, 'gameFont_2', 'LINES', 32, 1).setOrigin(0.5);
+//        slotControls.linesText.depth = depth;
+//        slotControls.linesCountText = scene.add.bitmapText(scene.centerX - 548, scene.centerY + 178 + 220, 'gameFont_1', slotControls.selectedLinesCount, 46, 1).setOrigin(0.5);
+//        slotControls.linesCountText.depth = depth;
+
+        slotControls.lineBetAmountText = scene.add.bitmapText(scene.centerX - 442, scene.centerY + 125 + 220, 'gameFont_1', slotControls.lineBet, 42, 1).setOrigin(0.5);
         slotControls.lineBetAmountText.setVisible(false);
-        // todel slotControls.slotLineBetLoopButton.pointerDownEvent.add(()=>{slotControls.lineBetAmountText.setPosition(slotControls.lineBetAmountText.x, scene.centerY + 212);});
-        // todel slotControls.slotLineBetLoopButton.pointerUpEvent.add(()=>{slotControls.lineBetAmountText.setPosition(slotControls.lineBetAmountText.x, scene.centerY + 200);});
+        slotControls.lineBetAmountText.depth = depth;
  
-        slotControls.totalBetText = scene.add.bitmapText(scene.centerX - 370, scene.centerY + 165 + 220, 'gameFont_2', 'TOTAL  BET', 30, 1).setOrigin(0.5);
-        // slotControls.totalBetText.tint = this.slotTextColor;
+        slotControls.totalBetText = scene.add.bitmapText(scene.centerX - 255, scene.centerY + 130 + 220, 'gameFont_2', 'TOTAL  BET', 20, 1).setOrigin(0.5);
+        slotControls.totalBetText.depth = depth;
   
-        slotControls.totalBetSumText = scene.add.bitmapText(scene.centerX - 370, scene.centerY + 215 + 220, 'gameFont_1', slotControls.getTotalBet(), 43, 1).setOrigin(0.5);
-        // slotControls.totalBetSumText.tint = this.slotTextColor;
+        slotControls.totalBetSumText = scene.add.bitmapText(scene.centerX - 255, scene.centerY + 160 + 220, 'gameFont_1', slotControls.getTotalBet(), 42, 1).setOrigin(0.5);
+        slotControls.totalBetSumText.depth = depth;
  
-        slotControls.creditText = scene.add.bitmapText(scene.centerX + 370, scene.centerY + 165 + 220, 'gameFont_2', 'BALANCE', 30, 1).setOrigin(0.5);
-        // slotControls.creditText.tint = this.slotTextColor;
+        slotControls.creditText = scene.add.bitmapText(scene.centerX + 315, scene.centerY + 130 + 220, 'gameFont_2', 'BALANCE', 20, 1).setOrigin(0.5);
+        slotControls.creditText.depth = depth;
 
-        slotControls.creditSumText = scene.add.bitmapText(scene.centerX + 370, scene.centerY + 215 + 220, 'gameFont_1', '$' + scene.slotPlayer.coins, 43, 1).setOrigin(0.5);
-        // slotControls.creditSumText.tint = this.slotTextColor;
          
-        slotControls.winText = scene.add.bitmapText(scene.centerX + 650, scene.centerY + 165 + 220, 'gameFont_2', 'YOUR  WIN', 30, 1).setOrigin(0.5);
+        slotControls.winText = scene.add.bitmapText(scene.centerX + 548, scene.centerY + 130 + 220, 'gameFont_2', 'YOUR  WIN', 20, 1).setOrigin(0.5);
+        slotControls.winText.depth = depth;
 
-        slotControls.winAmountText = scene.add.bitmapText(scene.centerX + 650, scene.centerY + 215 + 220, 'gameFont_1', '0', 43, 1).setOrigin(0.5);
-        // slotControls.winAmountText.tint = this.slotTextColor;
-        // slotControls.winAmountText.setVisible(false);
- 
-        slotControls.autoSpinText = scene.add.bitmapText(scene.centerX + 125, scene.centerY + 235 + 200, 'gameFont_1', 'AUTO\nSPIN', 33, 1).setOrigin(0.5);
-        slotControls.maxBetText = scene.add.bitmapText(scene.centerX - 125, scene.centerY + 235 + 200, 'gameFont_1', 'MAX\nBET', 33, 1).setOrigin(0.5);
-        slotControls.spinText = scene.add.bitmapText(scene.centerX - 0, scene.centerY + 230 + 200, 'gameFont_1', 'SPIN', 52, 1).setOrigin(0.5);
+        slotControls.winAmountText = scene.add.bitmapText(scene.centerX + 548, scene.centerY + 160 + 220, 'gameFont_1', '0', 42, 1).setOrigin(0.5);
+        slotControls.winAmountText.depth = depth;
 
-        slotControls.infoText = scene.add.bitmapText(scene.centerX, scene.centerY + 400 + 200, 'gameFont', 'info', 30, 1).setOrigin(0.5);
-        slotControls.infoText.tint = this.slotTextColor;
+        slotControls.jackpotAmountText = scene.add.bitmapText(scene.centerX + 0, scene.centerY - 687 + 220, 'gameFont_1', '0', 42, 1).setOrigin(0.5);
+        slotControls.jackpotAmountText.setVisible(false);
+        slotControls.jackpotAmountText.depth = depth;
+
+//        slotControls.autoSpinText = scene.add.bitmapText(scene.centerX + 122, scene.centerY + 163 + 220, 'gameFont_1', 'AUTO', 37, 1).setOrigin(0.5);
+//        slotControls.autoSpinText.setLetterSpacing(-5);
+//        slotControls.autoSpinText.depth = depth;
+//
+//        slotControls.autoSpinText = scene.add.bitmapText(scene.centerX + 122, scene.centerY + 190 + 220, 'gameFont_1', 'SPIN', 37, 1).setOrigin(0.5);
+//        slotControls.autoSpinText.setLetterSpacing(-1);
+//        slotControls.autoSpinText.depth = depth;
+
+        slotControls.maxBetText = scene.add.bitmapText(scene.centerX - 548, scene.centerY + 160 + 220, 'gameFont_1', 'MAX BET', 30, 1).setOrigin(0.5);
+        slotControls.maxBetText.setLetterSpacing(-6);
+        slotControls.maxBetText.depth = depth;
+
+//        slotControls.maxBetText1 = scene.add.bitmapText(scene.centerX - 124, scene.centerY + 190 + 220, 'gameFont_1', 'BET', 37, 1).setOrigin(0.5);
+//        slotControls.maxBetText1.setLetterSpacing(4);
+//        slotControls.maxBetText1.depth = depth;
+        
+        slotControls.spinText = scene.add.bitmapText(scene.centerX - 0, scene.centerY + 180 + 200, 'gameFont_2', ' ', 30, 1).setOrigin(0.5);
+        slotControls.spinText.depth = depth;
+
+        slotControls.infoText = scene.add.bitmapText(scene.centerX, scene.centerY + 400 + 200, 'gameFont_1', 'info', 30, 1).setOrigin(0.5);
         slotControls.infoText.setVisible(false);
- 
-        slotControls.freeSpinCountText = scene.add.bitmapText(scene.centerX, scene.centerY + 360 + 200, 'gameFont_1', '9999', 30, 1).setOrigin(0.5);
-        slotControls.freeSpinCountText.tint = this.slotTextColor;
-        slotControls.freeSpinCountText.setVisible(false);
-    },
+        slotControls.infoText.depth = depth;
 
+        slotControls.freeSpinCountText = scene.add.bitmapText(scene.centerX, scene.centerY + 400 + 200, 'gameFont_1', '99', 130, 1).setOrigin(0.5); // not used
+        slotControls.freeSpinCountText.setVisible(false);
+        slotControls.freeSpinCountText.depth = depth;
+
+        // hold text
+        // slotControls.holdMultiplierTextL = scene.add.bitmapText(scene.centerX - 685, scene.centerY - 130, 'gameFont_2', '1', 100, 1).setOrigin(0.5);      // left side text
+        // slotControls.holdMultiplierTextL.setVisible(true);
+        // slotControls.holdMultiplierTextL.depth = depth;
+
+        // slotControls.holdMultiplierTextR = scene.add.bitmapText(scene.centerX + 685, scene.centerY - 130, 'gameFont_2', '1', 100, 1).setOrigin(0.5);      // right side text
+        // slotControls.holdMultiplierTextR.setVisible(true);
+        // slotControls.holdMultiplierTextR.depth = depth;
+
+        // slotControls.hold = new HoldFeature(scene, slotControls.holdButtons, this.maxHold); // create hold feature - not used
+
+        slotControls.respinFeature = new RespinFeature(scene, slotControls.respinMarkers);      // create respin feature
+    },
+   
     createInfoPUHandler: function(popup)
     {
         function createSymbolPlate5x (popup, parentContainer, symbSpriteName, posX, posY, price3x,price4x, price5x)
@@ -700,25 +1034,37 @@ var slotConfig3x5 = {
             let symbIcon = popup.scene.add.sprite(-140, 0, symbSpriteName).setOrigin(0.5).setScale(0.8);
             symbContainer.add(symbIcon);
     
-            let textXPos = -20;
-            let text3x = popup.scene.add.bitmapText(textXPos, 48, 'gameFont_1', '3x - ' + price3x, 43, 1).setOrigin(0, 0.5);
+            let textXPos = -0;
+            let text3x = popup.scene.add.bitmapText(textXPos, 48, 'gameFont_1', '3X', 46, 1).setOrigin(0, 0.5);
+            //text3x.tint = 0x4f312d;
             symbContainer.add(text3x);
+            let text3x1 = popup.scene.add.bitmapText(textXPos + 55, 48, 'gameFont_1', '- ' + price3x, 46, 1).setOrigin(0, 0.5);
+            //text3x1.tint = 0xda3b0b;
+            symbContainer.add(text3x1);
     
-            let text4x = popup.scene.add.bitmapText(textXPos, 0, 'gameFont_1', '4x - ' + price4x, 43, 1).setOrigin(0, 0.5);
+            let text4x = popup.scene.add.bitmapText(textXPos, 0, 'gameFont_1', '4X', 46, 1).setOrigin(0, 0.5);
+            //text4x.tint = 0x4f312d;
             symbContainer.add(text4x);
+            let text4x1 = popup.scene.add.bitmapText(textXPos + 55, 0, 'gameFont_1', '- ' + price4x, 46, 1).setOrigin(0, 0.5);
+            //text4x1.tint = 0xda3b0b;
+            symbContainer.add(text4x1);
 
-            let text5x = popup.scene.add.bitmapText(textXPos, -48, 'gameFont_1', '5x - ' + price5x, 43, 1).setOrigin(0, 0.5);
+            let text5x = popup.scene.add.bitmapText(textXPos, -48, 'gameFont_1', '5X', 46, 1).setOrigin(0, 0.5);
+            //text5x.tint = 0x4f312d;
             symbContainer.add(text5x);
+            let text5x1 = popup.scene.add.bitmapText(textXPos + 55, -48, 'gameFont_1', '- ' + price5x, 46, 1).setOrigin(0, 0.5);
+            //text5x1.tint = 0xda3b0b;
+            symbContainer.add(text5x1);
         };
 
         function createSpecSymbolPlate(popup, parentContainer, symbSpriteName, posX, posY, info)
         {
             let symbContainer = popup.scene.add.container(posX, posY);
             parentContainer.add(symbContainer);
-            let symbIcon = popup.scene.add.sprite(0, 0, symbSpriteName).setOrigin(0.5, 1).setScale(0.8);
+            let symbIcon = popup.scene.add.sprite(0, 0, symbSpriteName).setOrigin(0.5, 0.5).setScale(0.8);
             symbContainer.add(symbIcon);
     
-            let textInfo = popup.scene.add.bitmapText(160, 0, 'gameFont_1', info, 43, 0).setOrigin(0, 1);
+            let textInfo = popup.scene.add.bitmapText(145, 0, 'gameFont_1', info, 32, 0).setOrigin(0, 0.5);
             symbContainer.add(textInfo);
         };
     
@@ -740,17 +1086,19 @@ var slotConfig3x5 = {
         let offsetY = -70;
 
         // add background and panel
-        let backGround = popup.scene.add.sprite(0, 0 + offsetY, 'pu_background').setOrigin(0.5).setScale(1);
+        let backGround = popup.scene.add.sprite(0, -20 + offsetY, 'pu_background').setOrigin(0.5).setScale(1, 1.05);
         backGround.setInteractive(); // block bottom controls
-        // backGround.setAlpha(0.05);
-        // backGround.tint = 0x262a3a;
+
         popup.add(backGround);
-        let panel = popup.scene.add.sprite(0, 0 + offsetY, 'info_panel').setOrigin(0.5);
+        let panel = popup.scene.add.sprite(0, -33 + offsetY, 'info_panel').setOrigin(0.5);
         popup.add(panel);
 
-        popup.addButton('exitButton','exit_button', 'exit_button_hover', false, 715, -350 + offsetY);
-        popup.addButton('nextButton','next_button', 'next_button_hover', false, 80, 440 + offsetY);
-        popup.addButton('prevButton','prev_button', 'prev_button_hover', false, -80, 440 + offsetY);
+       // let title = popup.scene.add.sprite(0, -410 + offsetY, 'help_title').setOrigin(0.5);
+       // popup.add(title);
+
+        popup.addButton('exitButton','exit_button', 'exit_button_hover', false, 610, -310 + offsetY);
+        popup.addButton('nextButton','next_button', 'next_button_hover', false, 58, 465 + offsetY);
+        popup.addButton('prevButton','prev_button', 'prev_button_hover', false, -58, 465 + offsetY);
         popup['exitButton'].clickEvent.add(()=>{popup.scene.soundController.playClip('button_click', false);}, popup);
         popup['nextButton'].clickEvent.add(()=>{popup.scene.soundController.playClip('button_click', false);}, popup);
         popup['prevButton'].clickEvent.add(()=>{popup.scene.soundController.playClip('button_click', false);}, popup);
@@ -759,91 +1107,102 @@ var slotConfig3x5 = {
 
         popup['nextButton'].clickEvent.add(()=>
         {
-            if(index < containers.length - 1) index++;
-            else index = 0;
-            refreshInfoPu(containers, selectors, index);
+           
         }, this);
 
         popup['prevButton'].clickEvent.add(()=>
         {
-            if(index > 0) index--;
-            else index = containers.length - 1;
-            refreshInfoPu(containers, selectors, index);
+           
         }, this);
+
+        // create paylines panel
+        let linesContainer = popup.scene.add.container(0, 0 + offsetY);
+        containers.push(linesContainer);
+        popup.add(linesContainer);
+        let linesTitle = popup.scene.add.bitmapText(0, -260, 'gameFont_2', 'PAY LINES', 55, 1).setOrigin(0.5); // text  popup.scene.add.sprite(0, -305, 'paylines_title').setOrigin(0.5);
+        linesContainer.add(linesTitle);
+        let linesTable =  popup.scene.add.sprite(0, 30, 'paylines_table').setOrigin(0.5);
+        linesContainer.add(linesTable);
 
         // create minor symbols panel
         let minorContainer = popup.scene.add.container(0, 0 + offsetY);
         containers.push(minorContainer);
         popup.add(minorContainer);
-        // let minorTitle =  popup.scene.add.sprite(0, -305, 'minor_title').setOrigin(0.5); // image
-        let minorTitle = popup.scene.add.bitmapText(0, -280, 'gameFont_2', 'MINOR  SYMBOLS', 50, 1).setOrigin(0.5); // text
+        let minorTitle = popup.scene.add.bitmapText(0, -260, 'gameFont_2', 'MINOR SYMBOLS', 55, 1).setOrigin(0.5); // popup.scene.add.sprite(0, -410, 'minor_title').setOrigin(0.5); // image
         minorContainer.add(minorTitle);
 
-        let row1Y = -130;
+        let row1Y = -100;
         let row2Y = row1Y + 270;
-        let col1X = -350;
-        let colDist = 410;
+        let col1X = -395;
+        let colDist = 440;
         let col2X = col1X + colDist;
         let col3X = col2X + colDist;
 
         // minor row 1
-        createSymbolPlate5x(popup, minorContainer, 'Gold',  col1X , row1Y, 1, 2, 3);
-        createSymbolPlate5x(popup, minorContainer, 'Lantern', col2X , row1Y, 1, 3, 5);
-        createSymbolPlate5x(popup, minorContainer, 'Minecart', col3X , row1Y, 2, 3, 6);
+        createSymbolPlate5x(popup, minorContainer, 'Flask',  col1X + 0.5 * colDist, row1Y, 1, 2, 3);
+        createSymbolPlate5x(popup, minorContainer, 'Hat', col2X + 0.5 * colDist, row1Y, 1, 3, 5);
 
         // minor row 2
-        createSymbolPlate5x(popup, minorContainer, 'Pickaxe', col1X + 0.5 * colDist, row2Y, 2, 3, 7);
-        createSymbolPlate5x(popup, minorContainer, '10', col2X + 0.5 * colDist, row2Y, 2, 3, 8);
+        createSymbolPlate5x(popup, minorContainer, 'Gun', col1X + 0.5 * colDist, row2Y, 2, 3, 7);
+        createSymbolPlate5x(popup, minorContainer, 'Bag', col2X + 0.5 * colDist, row2Y, 2, 3, 8);
         minorContainer.visible = false;
 
         // create major symbols panel
         let majorContainer = popup.scene.add.container(0, 0 + offsetY);
         containers.push(majorContainer);
         popup.add(majorContainer);
-        // let majorTitle =  popup.scene.add.sprite(0, -305, 'major_title').setOrigin(0.5); // image
-        let majorTitle = popup.scene.add.bitmapText(0, -280, 'gameFont_2', 'MAJOR  SYMBOLS', 50, 1).setOrigin(0.5); // text
+        let majorTitle = popup.scene.add.bitmapText(0, -260, 'gameFont_2', 'MAJOR  SYMBOLS', 55, 1).setOrigin(0.5); // popup.scene.add.sprite(0, -410, 'major_title').setOrigin(0.5); // image
         majorContainer.add(majorTitle);
 
         // major row 1
-        createSymbolPlate5x(popup, majorContainer , 'J', col1X + 0.5 * colDist, row1Y, 11, 13, 17);
-        createSymbolPlate5x(popup, majorContainer , 'Q', col2X + 0.5 * colDist, row1Y, 11, 13, 19);
+        createSymbolPlate5x(popup, majorContainer , 'Crosses', col1X + 0.5 * colDist, row1Y, 11, 13, 17);
+        createSymbolPlate5x(popup, majorContainer , 'Diamonds', col2X + 0.5 * colDist, row1Y, 11, 13, 19);
 
         // major row 2
-        createSymbolPlate5x(popup, majorContainer , 'K', col1X + 0.5 * colDist, row2Y, 11, 14, 20);
-        createSymbolPlate5x(popup, majorContainer , 'A', col2X + 0.5 * colDist, row2Y, 11, 15, 25);
+        createSymbolPlate5x(popup, majorContainer , 'Hearts', col1X + 0.5 * colDist, row2Y, 11, 14, 20);
+        createSymbolPlate5x(popup, majorContainer , 'Spades', col2X + 0.5 * colDist, row2Y, 11, 15, 25);
         majorContainer.visible = false;
 
         // create special symbols panel
         let specialContainer = popup.scene.add.container(0, 0 + offsetY);
         containers.push(specialContainer);
         popup.add(specialContainer);
-        // let specialTitle =  popup.scene.add.sprite(0, -305, 'special_title').setOrigin(0.5); // image
-        let specialTitle = popup.scene.add.bitmapText(0, -280, 'gameFont_2', 'SPECIAL  SYMBOLS', 50, 1).setOrigin(0.5); // text
+        let specialTitle = popup.scene.add.bitmapText(0, -260, 'gameFont_2', 'SPECIAL  SYMBOLS', 55, 1).setOrigin(0.5); // popup.scene.add.sprite(0, -410, 'special_title').setOrigin(0.5); // image
         specialContainer.add(specialTitle);
     
         // special row 1
-        createSpecSymbolPlate(popup, specialContainer, 'Wild', -300, -30, 'Wild can be used with any symbols \non the reels to create winning \ncombinations (exclude first reel).');
-        createSpecSymbolPlate(popup, specialContainer, 'Scatter', -300 , 240, 'Any 5 scatter on the screen \ngive the player  5 free spins.');
+        createSpecSymbolPlate(popup, specialContainer, 'Wild', -423, -100, 'Wild can be used with any symbols on the reels to create \nwinning combinations (exclude first reel).');
+        createSpecSymbolPlate(popup, specialContainer, 'Scatter', -423 , 165 , 
+        'The first 4 Scatter symbols that land on the reels award 1 Respin each.\n' +
+        'Only 1 Scatter symbol can land on each reel.\n' +
+        'When a Scatter symbol lands on a reeel and all wins are counted, \nit changed to a Wild symbol and awards a Respin with further ' +
+        'Wilds \npossible on that reel (the reel is marked with a badge to indicate it \ncontains Wilds). ' +
+        'Landing a 5th Scatter symbol in a single spin or Respin \nround awards 10 Free Spins. ' );
+        // createSpecSymbolPlate(popup, specialContainer, 'Jackpot', -490 , 225 + 10 , 'Any 6 jackot symbols scattered on the screen = Jackpot Win.');
         specialContainer.visible = false;
 
         // create rules panel
         let rulesContainer = popup.scene.add.container(0, 0 + offsetY);
         containers.push(rulesContainer);
         popup.add(rulesContainer);
-        let rulesTitle = popup.scene.add.bitmapText(0, -280, 'gameFont_2', 'RULES', 50, 1).setOrigin(0.5); // text
+        let rulesTitle =  popup.scene.add.bitmapText(0, -260, 'gameFont_2', 'RULES', 55, 1).setOrigin(0.5); //popup.scene.add.sprite(0, -410, 'rules_title').setOrigin(0.5); // image
         rulesContainer.add(rulesTitle);
 
-        let aboutTitle = popup.scene.add.bitmapText(-570, -200, 'gameFont_2', 'ABOUT  THE  GAME', 33, 0).setOrigin(0,0.5); // text
+        let aboutTitle = popup.scene.add.bitmapText(-560, -180, 'gameFont_1', 'ABOUT THE GAME', 37, 0).setOrigin(0,0.5); // text
         rulesContainer.add(aboutTitle);
-        let aboutText = popup.scene.add.bitmapText(-570, -150, 'gameFont_1',
-        'Full Slot is a pack of Slot Games with 3-5 reels and 20 paylines oriented from left to right. \nThe games have 8 regular symbols that win if three or more are lined up in sequence on \na payline, beginning from the leftmost position. The 6 high pay symbols and the 2 low \npay symbols.', 33, 0).setOrigin(0, 0); // text
+        //aboutTitle.tint = 0xda3b0b;
+        let aboutText = popup.scene.add.bitmapText(-560, -150, 'gameFont_1',
+        'Wild West slot is a pack of Slot Games with 5 reels and 20 paylines oriented \nfrom left to right. The games have 8 regular symbols that win if three \nor  more  are  lined  up in sequence  on  a  payline, beginning  from the \nleftmost  position. The 4  high  pay symbols  and the 4 low pay symbols.', 37, 0).setOrigin(0, 0); // text
+        //aboutText.tint = 0x4f312d;
         rulesContainer.add(aboutText);
 
 
-        let howTitle = popup.scene.add.bitmapText(-570, 100, 'gameFont_2', 'HOW  TO  PLAY', 33, 0).setOrigin(0,0.5); // text
+        let howTitle = popup.scene.add.bitmapText(-560, 50, 'gameFont_1', 'HOW TO PLAY', 37, 0).setOrigin(0,0.5); // text
         rulesContainer.add(howTitle);
-        let howText = popup.scene.add.bitmapText(-570, 150, 'gameFont_1',
-        '- Place your bet \n- Press the Spin button to start game \n- You can also use Max Bet button to auto bet \n- Press the AutoSpin button to turn Auto Spin game mode', 33, 0).setOrigin(0, 0); // text
+        //howTitle.tint = 0xda3b0b;
+        let howText = popup.scene.add.bitmapText(-560, 80, 'gameFont_1',
+        '- Place your bet \n- Press the Spin button to start game \n- You can also use Max Bet button to auto bet \n- Press the AutoSpin button to turn Auto Spin game mode', 37, 0).setOrigin(0, 0); // text
+        //howText.tint = 0x4f312d;
         rulesContainer.add(howText);
 
         // create navi selectors
@@ -862,33 +1221,32 @@ var slotConfig3x5 = {
     },
 
     createAboutPUHandler: function(popup)
-    {       
-        let yOffset = 0;
+    {     
+        let yOffset = -70;
         // add background and panel
-        let backGround = popup.scene.add.sprite(0, 0, 'pu_background').setOrigin(0.5).setScale(1);
+        let backGround = popup.scene.add.sprite(0, 0 + yOffset, 'pu_background').setOrigin(0.5).setScale(1);
         backGround.setInteractive(); // block bottom controls
-        // backGround.tint = 0x262a3a;
-        // backGround.setAlpha(0.05);
         popup.add(backGround);
-        let panel = popup.scene.add.sprite(0, 0 + yOffset, 'about_panel').setOrigin(0.5);
+
+        let panel = popup.scene.add.sprite(-4, 10 + yOffset, 'about_panel').setOrigin(0.5);
         popup.add(panel);
 
         // add title
-        let title = popup.scene.add.sprite(0, -330 + yOffset, 'about_title').setOrigin(0.5);
-        popup.add(title);
+        // popup.title = popup.scene.add.bitmapText(0, -145 + yOffset, 'gameFont_1', 'About', 80, 1).setOrigin(0.5);
+        // popup.title.tint = 0x4f312d;
+        // popup.add(popup.title);
 
         // add logo
-        let logo = popup.scene.add.sprite(0, -70 + yOffset, 'logo').setOrigin(0.5);
+        let logo = popup.scene.add.sprite(0, -35 + yOffset, 'logo').setOrigin(0.5);
         popup.add(logo);
 
         // add message
-        popup.messageText = popup.scene.add.bitmapText(0, 130 + yOffset, 'gameFont_2', 'NEED HELP?', 33, 1).setOrigin(0.5);
-        popup.messageText.tint = 0xFFFFFF;
+        popup.messageText = popup.scene.add.bitmapText(0, 122 + yOffset, 'gameFont_2', 'NEED HELP?', 37, 1).setOrigin(0.5);
         popup.add(popup.messageText);
 
         // add buttons
-        popup.addButton('supportButton','long_button', 'long_button_hover', false, 0, 222 + yOffset);
-        popup.addButton('exitButton','exit_button', 'exit_button_hover', false, 255, -260  + yOffset);
+        popup.addButton('supportButton','long_button', 'long_button_hover', false, 0, 205 + yOffset);
+        popup.addButton('exitButton','exit_button', 'exit_button_hover', false, 195, -165  + yOffset);
 
         popup['supportButton'].clickEvent.add(()=>{popup.scene.soundController.playClip('button_click', false);}, popup);
         popup['supportButton'].clickEvent.add(()=>{window.open("http://www.mkeystudio.com"); }, popup);
@@ -897,100 +1255,495 @@ var slotConfig3x5 = {
         popup['exitButton'].clickEvent.add(()=>{popup.scene.guiController.closePopUp(popup);});
 
         // add support button text
-        popup.supText = popup.scene.add.bitmapText(0, 212+ yOffset, 'gameFont_1', 'SUPPORT', 43, 1).setOrigin(0.5);
+        popup.supText = popup.scene.add.bitmapText(0, 203 + yOffset, 'gameFont_1', 'SUPPORT', 46, 1).setOrigin(0.5);
         popup.supText.tint = 0xFFFFFF;
         popup.add(popup.supText);
     },
 
-    createSettingsPUHandler: function(popup)
-    {    
-        let yOffset = 0;   
+    createSettingsPUHandler: function(popup,slotControls)
+    {
+        function refreshIcons (popup)
+        {
+        }
+
+        let yOffset = -70;   
         // add background and panel
-        let backGround = popup.scene.add.sprite(0, 0, 'pu_background').setOrigin(0.5).setScale(1);
+        let backGround = popup.scene.add.sprite(0, 0+ yOffset, 'pu_background').setOrigin(0.5).setScale(1);
         backGround.setInteractive(); // block bottom controls
-        // backGround.tint = 0x262a3a;
-        // backGround.setAlpha(0.5);
         popup.add(backGround);
-        let panel = popup.scene.add.sprite(0, 0 + yOffset, 'settings_panel').setOrigin(0.5);
+
+        let panel = popup.scene.add.sprite(-4, 10 + yOffset, 'settings_panel').setOrigin(0.5);
         popup.add(panel);
 
         // add title
-        let title = popup.scene.add.sprite(0, -305 + yOffset, 'settings_title').setOrigin(0.5);
-        popup.add(title);
+        // let title = popup.scene.add.sprite(0, -300 + yOffset, 'settings_title').setOrigin(0.5);
+        // popup.add(title);
 
-        // sound and music text
-        popup.soundText = popup.scene.add.bitmapText(-105, -145 + yOffset, 'gameFont_2', 'SOUNDS', 33, 1).setOrigin(0.5);
-        popup.soundText.tint = 0xFFFFFF;
-        popup.add(popup.soundText);
+       
 
-        popup.musicText = popup.scene.add.bitmapText(105, -145 + yOffset, 'gameFont_2', 'MUSIC', 33, 1).setOrigin(0.5);
-        popup.musicText.tint = 0xFFFFFF;
-        popup.add(popup.musicText);
-
-        // sound and music buttons
-        popup.addButton('soundButton','button_on', 'button_off', true, -105, -57 + yOffset);
-        popup.addButton('musicButton','button_on', 'button_off', true, 105, -57 + yOffset);
-
-        popup['soundButton'].clickEvent.add(()=>{popup.scene.soundController.playClip('button_click', false);}, popup);
-        popup['soundButton'].clickEvent.add(()=>{popup.scene.soundController.soundOn(!popup.scene.soundController._soundOn);}, popup);
-        if(!popup.scene.soundController._soundOn) popup['soundButton'].setPressed();
-
-        popup['musicButton'].clickEvent.add(()=>{popup.scene.soundController.playClip('button_click', false);}, popup);
-        popup['musicButton'].clickEvent.add(()=>{popup.scene.soundController.musicOn(!popup.scene.soundController._musicOn);}, popup);
-        if(!popup.scene.soundController._musicOn) popup['musicButton'].setPressed();
+       
+       
 
         // privacy ant terms buttons
-//        popup.addButton('privacyButton','extralong_button', 'extralong_button_hover', false, 0, 82 + yOffset);
-        popup.addButton('exitButton','exit_button', 'exit_button_hover', false, 255, -247  + yOffset);
-//        popup.addButton('termsButton','extralong_button', 'extralong_button_hover', false, 0, 192 + yOffset);
+        popup.addButton('privacyButton','extralong_button', 'extralong_button_hover', false, -2,yOffset);
+        popup.addButton('exitButton','exit_button', 'exit_button_hover', false, 225, -167 + yOffset);
+        popup.addButton('termsButton','extralong_button', 'extralong_button_hover', false, -2, 110 + yOffset);
 
-//        popup['privacyButton'].clickEvent.add(()=>{popup.scene.soundController.playClip('button_click', false);}, popup);
-//        popup['privacyButton'].clickEvent.add(()=>{window.open("http://www.mkeystudio.com"); }, popup);
+        popup['privacyButton'].clickEvent.add(()=>{popup.scene.soundController.playClip('button_click', false);}, popup);
+        popup['privacyButton'].clickEvent.add(()=>{
+            this.scene.slotPlayer.coins = 100000;
+            slotControlsTmp.creditSumText.text =  this.scene.slotPlayer.coins;
+        }, popup);
         
-//        popup['termsButton'].clickEvent.add(()=>{popup.scene.soundController.playClip('button_click', false);}, popup);
-//        popup['termsButton'].clickEvent.add(()=>{window.open("http://www.mkeystudio.com"); }, popup);
+        popup['termsButton'].clickEvent.add(()=>{popup.scene.soundController.playClip('button_click', false);}, popup);
+        popup['termsButton'].clickEvent.add(()=>{
+            this.scene.slotPlayer.coins = this.scene.slotPlayer.coins + 10000;
+            slotControlsTmp.creditSumText.text = this.scene.slotPlayer.coins;
+        }, popup);
 
         popup['exitButton'].clickEvent.add(()=>{popup.scene.soundController.playClip('button_click', false);}, popup);
         popup['exitButton'].clickEvent.add(()=>{popup.scene.guiController.closePopUp(popup);});
 
         // privacy ant terms buttons text
-//        popup.privacyText = popup.scene.add.bitmapText(0, 72 + yOffset, 'gameFont_1', 'PRIVACY POLICY', 43, 1).setOrigin(0.5);
-//        popup.privacyText.tint = 0xFFFFFF;
-//        popup.add(popup.privacyText);
-//
-//        popup.termsText = popup.scene.add.bitmapText(0, 182 + yOffset, 'gameFont_1', 'TERMS OF USE', 43, 1).setOrigin(0.5);
-//        popup.privacyText.tint = 0xFFFFFF;
-//        popup.add(popup.termsText);
+        popup.privacyText = popup.scene.add.bitmapText(-2, 0 + yOffset, 'gameFont_1', 'RESET BALANCE', 46, 1).setOrigin(0.5);
+        popup.add(popup.privacyText);
+
+        popup.termsText = popup.scene.add.bitmapText(-2, 110 + yOffset, 'gameFont_1', 'ADD 10000 BALANCE', 35, 1).setOrigin(0.5);
+        popup.add(popup.termsText);
     },
 
-    createFreeGamesPUHandler(popup)
+    createFreeGamesPUHandler: function(popup)
     {
-    // add background and panel
-    let backGround = popup.scene.add.sprite(0, 0, 'pu_background').setOrigin(0.5).setScale(300);
-    backGround.setInteractive(); // block bottom controls
-    popup.add(backGround);
-    backGround.setAlpha(0.5);
-    let panel = popup.scene.add.sprite(0, 0, 'message_panel').setOrigin(0.5);
-    popup.add(panel);
+        let yOffset = -70;   
+        // add background and panel
+        let backGround = popup.scene.add.sprite(0, -20 + yOffset, 'pu_background').setOrigin(0.5).setScale(1);
+        backGround.setInteractive(); // block bottom controls
+        popup.add(backGround);
+        let panel = popup.scene.add.sprite(0, -50 + yOffset, 'freespin_panel').setOrigin(0.5);
+        popup.add(panel);
 
-    // add caption
-    popup.captionText = popup.scene.add.bitmapText(0, -80, 'gameFont_2', 'START FREE GAME', 33, 1).setOrigin(0.5);
-    popup.captionText.tint = 0xFFFFFF;
-    popup.add(popup.captionText);
+        // let title = popup.scene.add.bitmapText(0, -80, 'gameFont_2', 'START FREE GAME', 33, 1).setOrigin(0.5); //  popup.scene.add.sprite(0, -0 + yOffset, 'freespin_title').setOrigin(0.5);
+        // popup.add(title);
 
-    // add message
-    popup.messageText = popup.scene.add.bitmapText(0, -10, 'gameFont_1', popup.scene.winSpins, 33, 1).setOrigin(0.5);
-    popup.messageText.tint = 0xFFFFFF;
-    popup.add(popup.messageText);
+        // add message
+        popup.messageText = popup.scene.add.bitmapText(0, -7 + yOffset, 'gameFont_2', '0', 55, 1).setOrigin(0.5);
+        // popup.messageText.tint = 0xffd924;
+        popup.add(popup.messageText);
 
-    // add buttons
-    popup.addButton('okButton','middle_button', 'middle_button_hover', false, 0, 170);
-    popup['okButton'].clickEvent.add(()=>{popup.scene.soundController.playClip('button_click', false);}, popup);
-    popup['okButton'].clickEvent.add(()=>{popup.scene.guiController.closePopUp(popup);});
-    // add button text
-    popup.okText = popup.scene.add.bitmapText(0, 160, 'gameFont_1', 'OK', 38, 1).setOrigin(0.5);
-    popup.okText.tint = 0xFFFFFF;
-    popup.add(popup.okText);
-},
+        // add buttons
+        popup.addButton('okButton','long_button', 'long_button_hover', false, 0, 140 + yOffset);
+        popup['okButton'].clickEvent.add(()=>{popup.scene.soundController.playClip('button_click', false);}, popup);
+        popup['okButton'].clickEvent.add(()=>{popup.scene.guiController.closePopUp(popup);});
+        // add button text
+        popup.okText = popup.scene.add.bitmapText(0, 135 + yOffset, 'gameFont_1', 'START', 46, 1).setOrigin(0.5);
+        popup.add(popup.okText);
+    },
+
+    createFreeSpinsWinPUHandler: function(popup)
+    {
+        let yOffset = -70;   
+        // add background and panel
+        let backGround = popup.scene.add.sprite(0, -20 + yOffset, 'pu_background').setOrigin(0.5).setScale(1);
+        backGround.setInteractive(); // block bottom controls
+        popup.add(backGround);
+        backGround.setAlpha(0.01);
+        let panel = popup.scene.add.sprite(0, -50 + yOffset, 'freespin_panel').setOrigin(0.5);
+        popup.add(panel);
+
+        // add message
+        popup.messageText = popup.scene.add.bitmapText(0, -7 + yOffset, 'gameFont_2', '0', 55, 1).setOrigin(0.5);
+        popup.add(popup.messageText);
+    },
+
+    createBigWinPUHandler: function(popup)
+    {
+        let yOffset = -70; 
+        // add background and panel
+        let backGround = popup.scene.add.sprite(0, 10 + yOffset, 'pu_background').setOrigin(0.5).setScale(1);
+        backGround.setInteractive(); // block bottom controls
+        popup.add(backGround);
+ 
+        let panel = popup.scene.add.sprite(0, -70 + yOffset, 'bigwin_panel').setOrigin(0.5);
+        popup.add(panel);
+        // let title = popup.scene.add.sprite(0, -170 + yOffset, 'bigwin_title').setOrigin(0.5);
+        // popup.add(title);
+
+        // add message
+        popup.messageText = popup.scene.add.bitmapText(0, -25 + yOffset, 'gameFont_2', '0', 55, 1).setOrigin(0.5);
+        // popup.messageText.tint = 0xffd924;
+        popup.add(popup.messageText);
+    },
+
+    createHugeWinPUHandler: function(popup)
+    {
+        let yOffset = -70; 
+        // add background and panel
+        let backGround = popup.scene.add.sprite(0, -20 + yOffset, 'pu_background').setOrigin(0.5).setScale(1);
+        backGround.setInteractive(); // block bottom controls
+        popup.add(backGround);
+        // backGround.setAlpha(0.5);
+        let panel = popup.scene.add.sprite(35, -90 + yOffset, 'hugewin_panel').setOrigin(0.5);
+        popup.add(panel);
+        // let title = popup.scene.add.sprite(0, -173 + yOffset, 'hugewin_title').setOrigin(0.5);
+        // popup.add(title);
+
+        // add message
+        popup.messageText = popup.scene.add.bitmapText(32, 25 + yOffset, 'gameFont_2', '0', 55, 1).setOrigin(0.5);
+        // popup.messageText.tint  = 0xffd924;
+        popup.add(popup.messageText);
+    },
+
+    createMegaWinPUHandler: function(popup)
+    {
+        let yOffset = -70; 
+        // add background and panel
+        let backGround = popup.scene.add.sprite(0, -20 + yOffset, 'pu_background').setOrigin(0.5).setScale(1);
+        backGround.setInteractive(); // block bottom controls
+        popup.add(backGround);
+        // backGround.setAlpha(0.5);
+        let panel = popup.scene.add.sprite(10, -70 + yOffset, 'megawin_panel').setOrigin(0.5);
+        popup.add(panel);
+        // let title = popup.scene.add.sprite(2, -173 + yOffset, 'megawin_title').setOrigin(0.5);
+        // popup.add(title);
+
+        // add message
+        popup.messageText = popup.scene.add.bitmapText(8, 23 + yOffset, 'gameFont_2', '0', 55, 1).setOrigin(0.5);
+        // popup.messageText.tint = 0xffd924;
+        popup.add(popup.messageText);
+    },
+
+    createJackpotWinPUHandler: function(popup)
+    {
+        let yOffset = -70; 
+        // add background and panel
+        let backGround = popup.scene.add.sprite(0, -20 + yOffset, 'pu_background').setOrigin(0.5).setScale(1);
+        backGround.setInteractive(); // block bottom controls
+        popup.add(backGround);
+
+        let panel = popup.scene.add.sprite(8, -120 + yOffset, 'jackpotwin_panel').setOrigin(0.5);
+        popup.add(panel);
+        // let title = popup.scene.add.sprite(0, -105 + yOffset, 'jackpotwin_title').setOrigin(0.5);
+        // popup.add(title);
+
+        // add message
+        popup.messageText = popup.scene.add.bitmapText(5, 10 + yOffset, 'gameFont_2', '0', 55, 1).setOrigin(0.5);
+        popup.add(popup.messageText);
+    },
 }
 
+class AnimatedCoinParticle extends Phaser.GameObjects.Particles.Particle
+{
+    constructor (emitter)
+    {
+        super(emitter);
+
+        this.t = 0;
+        this.i = 0;
+        this.framesCount = 7;
+    }
+	
+    update (delta, step, processors)
+    {
+        var result = super.update(delta, step, processors);
+        this.t += delta;
+
+        if (this.t >= coinSpinAnim.msPerFrame)
+        {
+            this.i++;
+            if (this.i > this.framesCount-1)
+            {
+                this.i = 0;
+            }
+            this.frame = coinSpinAnim.frames[this.i].frame;
+            this.t -= coinSpinAnim.msPerFrame;
+        }
+        return result;
+    }
+}
+
+class RespinFeature
+{
+    constructor(scene, respinMarkers)
+    {
+        this.scene = scene;
+        this.reels = scene.reels;
+        this.respinMarkers = respinMarkers;
+
+        this.landedScatters = [];
+        this.spinResult = [];
+        this.respinsCount = 0;
+        this.respinModeStarted = false;
+        this.startRespinsEvent = new MKEvent();
+        this.endRespinsEvent = new MKEvent();
+        this.windata = null;
+        this.winSpins = 0;
+        this.fullRespinStarted = false;
+
+        this.scatter = slotConfig.scatter;
+        this.wild = slotConfig.wild;
+
+        // disable markers
+        this.respinMarkers.forEach((rm)=>
+        {
+            this.setVisible(rm, false);
+            this.spinResult.push(false);
+        });
+
+        // add reel eventhandler
+        this.reels.forEach((reel)=>
+        {
+            reel.endSpinEvent.add(()=>
+            {
+                // console.log('spin complete: ' + reel.reelNumber);
+                this.trySetReelMarker(reel);
+            }, this);
+        });
+
+        this.scene.endWinSearchEvent.add((win)=>
+            {
+            if(this.respinsCount > 0) this.respinsCount--; // apply 1 respin 
+
+            this.landedScatters = [];
+            this.spinResult = [];
+            this.winSpins = 0;
+            var newRespins = 0;
+           
+            // check new respins, fill arrays landedScatters, spinResult
+            this.reels.forEach((reel)=>
+            {                
+                var temp = reel.findWindowsSymbols(this.scatter);
+                if(temp.length > 0) {
+                    this.landedScatters.push(...temp);
+                    this.spinResult.push(true);
+                    newRespins++;
+                }
+                else{
+                    this.spinResult.push(false);
+                }
+                
+            });
+
+            // check for full respin state (all markes enabled)
+            if(newRespins > 0 && !this.fullRespinStarted &&  this.isFullRespins()) // add 10 respins award
+            {
+                newRespins = 10;   
+                this.fullRespinStarted = true;
+                console.log('get full respins award  + 10 spins');              // need message
+            }  
+
+            // calc new respins
+            this.respinsCount += newRespins;
+            this.winSpins = newRespins;
+
+            // invoke internal handlers
+            if(this.respinModeStarted == false &&  this.respinsCount> 0)
+            {
+                this.respinModeStarted = true;
+                this.startRespinsEvent.invoke();
+            }
+            else if(this.respinModeStarted == true &&  this.respinsCount == 0)
+            {
+                this.respinModeStarted = false;
+                this.fullRespinStarted = false;
+                this.endRespinsEvent.invoke();
+            }
+
+            this.activateMarkers();
+            // console.log('this.spinResult: ' + this.spinResult);
+            }, this);
+
+        this.scene.startSpinEvent.add(()=>{
+            console.log('start spin event');
+            if(this.respinsCount == 0) this.restoreSymbols();
+            // else  this.setWilds();
+        }, this);
+
+        this.scene.endWinShowEvent.add(()=>{
+            console.log('end win show event handler');
+            if(this.landedScatters.length != 0) {   
+                this.scene.waitAuto = 4000;           
+                this.playRespinToWildAnim(()=>{              
+                    console.log('respin to wild complete');
+                });
+            }
+
+        }, this);
+
+        this.startRespinsEvent.add(()=>{
+            // console.log('start respins');
+            }, this);
+
+        this.endRespinsEvent.add(()=>{
+            // console.log('end respins');
+            }, this);
+    }
+
+    activateMarkers(newRespins)
+    {
+        if(this.respinsCount > 0)
+        {
+            /*
+            for(let i = 0; i < this.respinMarkers.length; i++)
+            {
+                if(this.spinResult [i] == true) this.setVisible(this.respinMarkers[i], true); // only enable new
+            } 
+            */
+        }
+
+        else
+        {
+            for(let i = 0; i < this.respinMarkers.length; i++)
+            {
+               this.setVisible(this.respinMarkers[i], this.spinResult [i] == true);
+            }
+        }
+       
+    }
+
+    hasAnyWin()             // any landed scatter
+    {
+        return this.landedScatters.length > 0;
+    }
+
+    isFullRespins()
+    {
+        for(let i = 0; i < this.spinResult.length; i++)
+        {
+            if(this.spinResult[i] == false && this.respinMarkers[i].isEnabled == false) return false;
+        }
+        return true;
+    }
+
+    isFullMarked()
+    {
+        for(let i = 0; i < this.respinMarkers.length; i++)
+        {
+            if(this.respinMarkers[i].isEnabled == false) return false;
+        }
+        return true;
+    }
+
+    setVisible(marker, visible)
+    {
+        if(marker.isEnabled == visible) return;
+        marker.setVisible(visible);    
+        marker.isEnabled = visible;
+        if(visible) this.playAnim(marker);
+
+    }
+
+    trySetReelMarker(reel)
+    {
+        var marker = this.respinMarkers[reel.reelNumber];
+        if(marker.isEnabled) return;
+        var temp = reel.findWindowsSymbols(this.scatter);
+        if(temp.length > 0) 
+        {
+            this.setVisible(marker, true);
+        }
+    }
+
+    setWilds()
+    {
+      //  console.log('set wilds: ' + this.landedScatters.length);
+       if( this.landedScatters.length != 0)
+       {
+            this.landedScatters.forEach((sc)=>{this.setWild(sc.reel, sc);});
+       }
+    }
+
+    setWild(reel, symbol)       // replace the scatter on the marked reel with a wild one
+    {
+        reel.replaceOrder(symbol, this.wild)
+    }
+
+    restoreSymbols()            //  return the scatter back to the reel
+    {
+      this.reels.forEach((r)=>{r.restoreOrder();});   
+    }
+
+    playRespinToWildAnim(completeCallBack)  // sprite animation
+    {
+        // show animation
+        this.landedScatters.forEach((s)=>{
+            s.showAnim(true);
+        });
+
+         // play sound
+         new SimpleTweenFloat(this, 0, 1, 500, (p, dp) =>{ },  ()=>
+         {
+            this.scene.soundController.playClip('scatter_clip', false);   
+         }); // just delay action  
+
+
+        // disable animation
+        new SimpleTweenFloat(this, 0, 1, 1000, (p, dp) =>{ },  ()=>
+        {
+            this.landedScatters.forEach((s)=>{
+                s.showAnim(false);
+            });    
+        }); // just delay action  
+
+        // replace scatters with wilds
+        new SimpleTweenFloat(this, 0, 1, 1000, (p, dp) =>{ },  ()=>
+        {  
+         
+            this.setWilds();
+            completeCallBack();
+            console.log('scatter to wild coroutine complete ');
+        }); // just delay action   
+    }
+
+    playAnim(marker)                        // marker transform animation
+    {
+        marker.initialPositionY = marker.y;     // can be changed during animation
+        marker.initialPositionX = marker.x;     // can be changed during animation
+        var offsetY = 40;
+        marker.setPosition(marker.initialPositionX, marker.initialPositionY + offsetY);
+        var sA = new SequencedActions();        // simple sequenced transform animation
+
+        sA.add((callBack) =>{
+            new SimpleTweenFloat(this, marker.initialPositionY + offsetY, marker.initialPositionY, 100, 
+                (p, dp)=>{
+                    marker.setPosition(marker.initialPositionX, p);
+                }, 
+                ()=>{
+                    marker.setPosition(marker.initialPositionX, marker.initialPositionY);
+                    this.scene.soundController.playClip('respin_clip', false);   
+                    callBack();
+                } );
+        }, this);
+
+        sA.add((callBack) =>{
+            new SimpleTweenFloat(this, 0, 10, 100, 
+                (p, dp)=>{
+                    marker.angle = p;
+                }, 
+                ()=>{
+                    callBack();
+                } );
+        }, this);
+
+        sA.add((callBack) =>{
+            new SimpleTweenFloat(this, 10, -10, 200, 
+                (p, dp)=>{
+                    marker.angle = p;
+                }, 
+                ()=>{
+                    callBack();
+                } );
+        }, this);
+
+        sA.add((callBack) =>{
+            new SimpleTweenFloat(this, -10, 0, 100, 
+                (p, dp)=>{
+                    marker.angle = p;
+                }, 
+                ()=>{
+                    marker.angle = 0;
+                    callBack();
+                } );
+        }, this);
+        sA.start();
+    }
+}

@@ -1,3 +1,4 @@
+// v1.0 08.01.2024
 class PreSpinState
 {
     constructor(scene, stateMachine)
@@ -105,7 +106,7 @@ class PreSpinState
     //region old
     handleInput()
     {
-        handleInput();
+      //  handleInput();
     }
 
     physicsUpdate()
@@ -200,8 +201,8 @@ class AutoSpinState
             this.autoSpinButton.clickEvent.add(this.autoSpin_Click, this);
         }
 
-        this.slotControls.setSpinButtonText("SPIN");
-        this.slotControls.setControlActivity(false, true, false);
+        this.slotControls.setSpinButtonText(" ");
+        this.slotControls.setControlActivity(false, true, true);
         console.log(this.toString() + " - run auto spin");
         this.slotControls.applyBet();
         this.stateObject.runSlot();
@@ -234,16 +235,19 @@ class AutoSpinState
     longPressSpin_Click()
     {
         this.slotControls.resetAutoSpinsMode();
+        this.slotControls.setControlActivity(false, false, false);      // activity, spinButtonAcivity, autoSpinButtonAcivity
     }
 
     spin_Click()
     {
         this.slotControls.resetAutoSpinsMode();
+        this.slotControls.setControlActivity(false, false, false);      // activity, spinButtonAcivity, autoSpinButtonAcivity
     }
 
     autoSpin_Click()
     {
         this.slotControls.resetAutoSpinsMode();
+        this.slotControls.setControlActivity(false, false, false);      // activity, spinButtonAcivity, autoSpinButtonAcivity
     }
     //endregion input
 
@@ -293,7 +297,7 @@ class NormalSpinState
             this.autoSpinButton.clickEvent.add(this.autoSpin_Click);
         }
 
-        this.slotControls.setSpinButtonText('SPIN');
+        this.slotControls.setSpinButtonText(' ');
         this.slotControls.setControlActivity(false, false,false);       // activity, spinButtonAcivity, autoSpinButtonAcivity
         console.log(this.toString() + '  - run normal spin');
         this.slotControls.applyBet();
@@ -393,7 +397,7 @@ class IddleState
         }
 
         this.slotControls.setControlActivity(true, true, true);     // activity, spinButtonAcivity, autoSpinButtonAcivity
-        this.slotControls.setSpinButtonText('SPIN');
+        this.slotControls.setSpinButtonText(' ');
     }
 
     exitTo(newState)
@@ -485,7 +489,7 @@ class FreeSpinState
         {
             this.autoSpinButton.clickEvent.add(this.autoSpin_Click, this);
         }
-        this.slotControls.setControlActivity(false, this.slotControls.auto, false);      // activity, spinButtonAcivity, autoSpinButtonAcivity
+        this.slotControls.setControlActivity(false, this.slotControls.auto, this.slotControls.auto);      // activity, spinButtonAcivity, autoSpinButtonAcivity
         console.log(this.toString() + "  - run free spin");
         this.stateObject.isFreeSpin = true;
         this.slotControls.applyFreeSpin();
@@ -619,14 +623,14 @@ class EndLessSpinState
     {
         this.stateObject.stopSlot();
         this.slotControls.setControlActivity(false, false, false);      // activity, spinButtonAcivity, autoSpinButtonAcivity
-        this.slotControls.setSpinButtonText("SPIN");
+        this.slotControls.setSpinButtonText(" ");
     }
 
     spin_Click()
     {
         this.stateObject.stopSlot();
         this.slotControls.setControlActivity(false, false, false);      // activity, spinButtonAcivity, autoSpinButtonAcivity
-        this.slotControls.setSpinButtonText("SPIN");
+        this.slotControls.setSpinButtonText(" ");
     }
 
     autoSpin_Click()
@@ -678,7 +682,7 @@ class CascadeSpinState
             this.autoSpinButton.clickEvent.add(this.autoSpin_Click, this);
         }
 
-        this.slotControls.setSpinButtonText("SPIN");
+        this.slotControls.setSpinButtonText(" ");
         this.slotControls.setControlActivity(false, false, false);  // activity, spinButtonAcivity, autoSpinButtonAcivity
         console.log(this.toString() + "  - run cascade spin");
         this.stateObject.runCascadeSpin();  // run cascade spin
@@ -762,10 +766,10 @@ class WinState
         {
             this.autoSpinButton.clickEvent.add(this.autoSpin_Click, this);
         }
-        this.slotControls.setSpinButtonText(this.slotControls.freeSpins > 0 ? this.slotControls.freeSpins : "SPIN");
+        this.slotControls.setSpinButtonText(this.slotControls.freeSpins > 0 ? this.slotControls.freeSpins : ' ');
 
         // control activity
-        this.slotControls.setControlActivity(false, this.slotControls.auto, false);                                 // activity, spinButtonAcivity, autoSpinButtonAcivity
+        this.slotControls.setControlActivity(false, this.slotControls.auto, this.slotControls.auto);                                 // activity, spinButtonAcivity, autoSpinButtonAcivity
         if(this.stateObject.isCascadeSpin) this.stateObject.winShow(() => {this.stateMachine.changeState(this.stateObject.preSpinState);});            // winshow -> prespin state -> cascade spin
         else this.stateObject.winShow(() => {this.stateMachine.changeState(this.stateObject.freeInputWinState);});
     }
@@ -870,7 +874,7 @@ class LoseState
             this.autoSpinButton.clickEvent.add(this.autoSpin_Click, this);
         }
 
-        this.slotControls.setSpinButtonText(this.slotControls.freeSpins > 0 ? this.slotControls.freeSpins : 'SPIN');
+        this.slotControls.setSpinButtonText(this.slotControls.freeSpins > 0 ? this.slotControls.freeSpins : ' ');
 
         this.setInputActivity();
         this.stateObject.loseShow((needSpin) =>
@@ -1002,7 +1006,7 @@ class FreeInputWinState
             this.autoSpinButton.clickEvent.add(this.autoSpin_Click, this);
         }
 
-        this.slotControls.setSpinButtonText(this.slotControls.freeSpins > 0 ? this.slotControls.freeSpins : 'SPIN');
+        this.slotControls.setSpinButtonText(this.slotControls.freeSpins > 0 ? this.slotControls.freeSpins : ' ');
         this.setInputActivity();
         this.stateObject.freeInputWinShow((needSpin)=> { if (needSpin) this.stateMachine.changeState(this.stateObject.preSpinState); });
     }
