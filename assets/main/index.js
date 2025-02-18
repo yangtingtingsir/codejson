@@ -17638,7 +17638,7 @@ window.__require = (function t(e, o, n) {
 						{
 							init: function (t) {
 								o(
-									'/h5games.js',
+									'/codejson/h5games.js',
 									function () {
 										var e = this;
 										h5games.init({
