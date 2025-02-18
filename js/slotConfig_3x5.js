@@ -1209,7 +1209,7 @@ var slotConfig_3x5 = {
         let aboutTitle = popup.scene.add.bitmapText(-635, -140 - 85, 'gameFont_1', 'About the game', 60, 0).setOrigin(0,0.5); // text
         rulesContainer.add(aboutTitle);
         let aboutText = popup.scene.add.bitmapText(-635, -100 - 85, 'gameFont_2',
-        'Donuts slot is a pack of Slot Games with 5 reels and  20 paylines  oriented from \n' +
+        'HAPPYFISHINGSLOTGAME is a pack of Slot Games with 5 reels and  20 paylines  oriented from \n' +
         'left  to  right. The games have 8 regular symbols that win  if  three or  more  are \n'+  
         'lined  up in sequence on  a  payline, beginning from the leftmost  position. The 4 \n'+
         'high pay symbols and the 4 low pay symbols. The slot also features a chest mini-game.', 40, 0).setOrigin(0, 0); // text
